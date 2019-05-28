@@ -11,10 +11,26 @@ output: learnr::tutorial
  * Git: Version-control system
  * GitHub: a free hosting service for git repositories.
  
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(cache=FALSE)
+knitr::opts_chunk$set(fig.width=8)
+knitr::opts_chunk$set(fig.height=8)
+```
+
+ 
 ## Verify Installation
 
 There should be a version below the following code chunk. If there is not, please install git from [here](https://git-scm.com/).
 
 ```{bash include=TRUE}
 git --version
+```
+
+
+## Exercise
+```{r exercise1, exercise=TRUE}
+system("### INSERT YOUR COMMAND HERE ###")
 ```
