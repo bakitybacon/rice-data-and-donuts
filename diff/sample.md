@@ -2,4 +2,4 @@
 
 Welcome to the GitHub workshop!
 
-We're **so** glad you could join us.
+We're __so__ glad you could join us today.
