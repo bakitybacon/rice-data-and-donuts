@@ -62,8 +62,12 @@ registrations = re.sub(r"(\d) - (\d)", r"\1-\2", registrations)
 # there's a weird apostrophe in a class title. remove it.
 registrations = re.sub('’', "'", registrations)
 
+# if more than one class has been selected, get an array
 # remove first hyphen and split on all remaining hyphens
-classes = registrations[2:].split(" - ")
+if registrations[1] == '-':
+	classes = registrations[2:].split(" - ")
+else:
+	classes = [registrations]
 
 # mark that we've entered
 for clazz in classes:
