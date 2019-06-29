@@ -1,0 +1,24 @@
+---
+title: "Introduction to R"
+author: 
+   name: "Corrin Fosmire"
+   affiliaton: "Rice University"
+date: "`r format(Sys.time(), '%B %d   , %Y')`"
+runtime: shiny_prerendered
+output: learnr::tutorial
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This webpage will run through some exercises for the Introduction to R classes to help you get a feel for the capabilities of R.
+
+Click on one of the links on the left to get started!
+
+## Exercises:
+
+## Exercises: Reading Data
+
+Hello World!
