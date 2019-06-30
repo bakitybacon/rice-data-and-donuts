@@ -13,12 +13,243 @@ library(learnr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This webpage will run through some exercises for the Introduction to R classes to help you get a feel for the capabilities of R.
+## Introduction
 
-Click on one of the links on the left to get started!
+This webpage will run through some exercises to help you get a feel for the power of R. Click on one of the headers on the left to get started!
 
-## Exercises:
+## Exercise: Arithmetic
 
-## Exercises: Reading Data
+Calculate one of the roots of the polynomial \( x^2 + 5*x + 6\). Use the quadratic formula (\(\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}  \)) with a = 1, b = 5, and c = 6.
 
-Hello World!
+```{r arithmeticquiz, exercise=TRUE}
+#Enter your code here.
+```
+
+```{r arithmeticquiz-hint-1}
+-5 + sqrt("discriminant")
+```
+
+```{r arithmeticquiz-hint-2}
+(-5 + sqrt("discriminant")) / 2 * 1
+```
+
+```{r arithmeticquiz-hint-3}
+(-5 + sqrt(5 ^ 2 - 4 * 1 * 6))
+```
+
+```{r arithmeticquiz-hint-4}
+(-5 + sqrt(5 ^ 2 - 4 * 1 * 6)) / 2 * 1
+```
+
+You should get \( x = -2\) and/or \( x = -3\).
+
+## Exercise: Assignment
+
+Calculate one of the roots of the polynomial \( x^2 + 5*x + 6\). Use the quadratic formula (\(\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}  \)) with a = 1, b = 5, and c = 6. This time, explicitly assign these values to variables called a, b, and c!
+
+```{r assignmentquiz, exercise=TRUE}
+#Enter your code here.
+```
+
+```{r assignmentquiz-hint-1}
+a <- 1
+b <- 5
+c <- 6
+```
+
+```{r assignmentquiz-hint-2}
+a <- 1
+b <- 5
+c <- 6
+(-b + sqrt("discriminant")) / 2 * a
+```
+
+```{r assignmentquiz-hint-3}
+a <- 1
+b <- 5
+c <- 6
+(-b + sqrt(b ^ 2 - 4 * a * c))
+```
+
+```{r assignmentquiz-hint-4}
+a <- 1
+b <- 5
+c <- 6
+(-b + sqrt(b ^ 2 - 4 * a * c)) / 2 * a
+```
+
+You should get \( x = -2\) and/or \( x = -3\).
+
+Now, change the above values of a = 1, b = -6, and c = 9 and rerun the chunk. You should now get \( x = 3\).
+
+## Exercise: Type Conversion
+
+I tried running the chunk below, but I didn't get what I expected.
+
+```{r typefail, echo=TRUE}
+sqrt(-1)
+```
+
+Convert -1 to a complex number and re-run the chunk to get the complex square root.
+
+```{r typequiz, exercise=TRUE}
+#Enter your code here.
+```
+
+```{r typequiz-hint-1}
+as.complex
+```
+
+```{r typequiz-hint-2}
+as.complex(-1)
+```
+
+```{r typequiz-hint-3}
+sqrt(as.complex(-1))
+```
+
+You should get the complex square root of \(i\).
+
+## Exercise: Vectors, Lists, Matrices
+
+Make each of the following:
+
+* A vector of your birth year, your birth month, and birth day, all as integers
+* A list of your birth year, your birth month, and birth day, all as integers, and your name, as a string. Label all values using names()!
+* A matrix of the numbers 1:16, with 4 rows. 
+* Change the matrix so the 3rd row is all 3s.
+
+```{r dataquiz, exercise=TRUE}
+#Enter your code here.
+my_vec <- c()
+my_list <- list()
+my_mat <- matrix()
+
+list(my_vec, my_list, my_mat)
+```
+
+```{r dataquiz-hint-1}
+my_vec <- c(1971, 2, 17)
+```
+
+```{r dataquiz-hint-2}
+my_vec <- c(1971, 2, 17)
+my_list <- list(1971, 2, 17, "Jack")
+names(my_list) <- c("year", "month", "day", "name")
+```
+
+```{r dataquiz-hint-3}
+my_vec <- c(1971, 2, 17)
+my_list <- list(1971, 2, 17, "Jack")
+names(my_list) <- c("year", "month", "day", "name")
+my_mat <- matrix(1:16, nrow = 4)
+```
+
+```{r dataquiz-hint-4}
+my_vec <- c(1971, 2, 17)
+my_list <- list(1971, 2, 17, "Jack")
+names(my_list) <- c("year", "month", "day", "name")
+my_mat <- matrix(1:16, nrow = 4)
+my_mat[3,] <- matrix(c(3, 3, 3, 3))
+```
+
+## Exercise: Matrix Operations
+
+Use the following formula and matrix multiplication operations to find the 3rd, 4th, and 5th Fibonacci numbers, where \( F_n\) means the \( n\)th Fibonacci number:
+
+\( \begin{pmatrix}
+1 & 1 \\
+1 & 0
+\end{pmatrix}^n  = \begin{pmatrix}
+F_{n-1} & F_n \\
+F_n & F_{n+1}
+\end{pmatrix}\)
+
+```{r matmultquiz, exercise=TRUE}
+# Your code here
+```
+
+```{r matmultquiz-hint-1}
+matrix(c("values"))
+```
+
+```{r matmultquiz-hint-2}
+matrix(c("values"), nrow=2)
+```
+
+```{r matmultquiz-hint-3}
+matrix(c(1, 1, 1, 0), nrow=2) %*%
+```
+
+```{r matmultquiz-hint-4}
+matrix(c(1, 1, 1, 0), nrow=2) %*% matrix(c(1, 1, 1, 0), nrow=2) %*% matrix(c(1, 1, 1, 0), nrow=2) %*% 
+matrix(c(1, 1, 1, 0), nrow=2)
+```
+
+You should get 2, 3, and 5.
+
+## Exercise: Factors and Data Frames
+
+Create a data frame with three columns: hour, minute, and AM/PM. Enter 5 times. Make sure to use a factor for AM/PM!
+
+```{r dfquiz, exercise=TRUE}
+# Your code here
+```
+
+```{r dfquiz-hint-1}
+data.frame(column=observations)
+```
+
+```{r dfquiz-hint-2}
+data.frame(hour=c(), minute=c(), ampm=factor())
+```
+
+```{r dfquiz-hint-3}
+data.frame(hour=c(1), minute=c(5), ampm=factor(c("AM"), levels = c("")))
+```
+
+```{r dfquiz-hint-4}
+data.frame(hour=c(1, 3), minute=c(5, 30), ampm=factor(c("AM", "PM"), levels = c("AM", "PM")))
+```
+
+## Exercise: Reading and Writing Data
+
+Open up RStudio for this exercise. You can't run it in the browser!
+
+We're going to be using the built-in R data set faithful.
+
+First, check the columns of faithful and the first few observations to get a feel for the data.
+
+Next, write the data to faithful.csv with write.csv.
+
+Read it back in with read.csv.
+
+What do you notice about the new data frame? (You can fix this by adding row.names<-FALSE to your write command)
+
+```{r rwquiz, exercise=TRUE}
+# Your code here
+```
+
+```{r rwquiz-hint-1}
+colnames(faithful)
+```
+
+```{r rwquiz-hint-2}
+colnames(faithful)
+head(faithful)
+```
+
+```{r rwquiz-hint-3}
+colnames(faithful)
+head(faithful)
+
+write.csv(faithful, "faithful.csv")
+```
+
+```{r rwquiz-hint-4}
+colnames(faithful)
+head(faithful)
+
+write.csv(faithful, "faithful.csv", row.names=FALSE)
+read.csv("faithful.csv")
+```
