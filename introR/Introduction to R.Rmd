@@ -3,7 +3,7 @@ title: "Introduction to R"
 author: 
    name: "Corrin Fosmire"
    affiliaton: "Rice University"
-date: "`r format(Sys.time(), '%B %d   , %Y')`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 runtime: shiny_prerendered
 output: learnr::tutorial
 ---
@@ -19,7 +19,7 @@ This webpage will run through some exercises to help you get a feel for the powe
 
 ## Exercise: Arithmetic
 
-Calculate one of the roots of the polynomial \( x^2 + 5*x + 6\). Use the quadratic formula (\(\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}  \)) with a = 1, b = 5, and c = 6.
+Calculate one of the roots of the polynomial \( x^2 + 5 \cdot x + 6\). Use the quadratic formula (\(\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}  \)) with a = 1, b = 5, and c = 6.
 
 ```{r arithmeticquiz, exercise=TRUE}
 #Enter your code here.
@@ -125,7 +125,9 @@ my_vec <- c()
 my_list <- list()
 my_mat <- matrix()
 
-list(my_vec, my_list, my_mat)
+print(my_vec)
+print(my_list)
+print(my_mat)
 ```
 
 ```{r dataquiz-hint-1}
@@ -166,7 +168,7 @@ F_n & F_{n+1}
 \end{pmatrix}\)
 
 ```{r matmultquiz, exercise=TRUE}
-# Your code here
+# Enter your code here.
 ```
 
 ```{r matmultquiz-hint-1}
@@ -193,7 +195,7 @@ You should get 2, 3, and 5.
 Create a data frame with three columns: hour, minute, and AM/PM. Enter 5 times. Make sure to use a factor for AM/PM!
 
 ```{r dfquiz, exercise=TRUE}
-# Your code here
+# Enter your code here.
 ```
 
 ```{r dfquiz-hint-1}
@@ -227,7 +229,7 @@ Read it back in with read.csv.
 What do you notice about the new data frame? (You can fix this by adding row.names<-FALSE to your write command)
 
 ```{r rwquiz, exercise=TRUE}
-# Your code here
+# Enter your code here.
 ```
 
 ```{r rwquiz-hint-1}
@@ -253,3 +255,136 @@ head(faithful)
 write.csv(faithful, "faithful.csv", row.names=FALSE)
 read.csv("faithful.csv")
 ```
+
+## Exercises: Data Manipulation
+
+The faithful dataset has times between eruptions (the waiting column) measured in minutes. Add a new column giving the time in hours.
+
+```{r newcolquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r newcolquiz-hint-1}
+faithful$waiting / 60
+```
+
+```{r newcolquiz-hint-2}
+faithful$waiting.hrs <- faithful$waiting / 60
+```
+
+Find the times when the waiting time is more than 30x as long as the eruption. There should be 17, starting with 17 and ending with 263. Save it into the variable ``longwaits``.
+
+```{r subsetquiz, exercise=TRUE}
+longwaits <- c()
+
+print(longwaits)
+print(nrow(longwaits))
+```
+
+```{r subsetquiz-hint-1}
+longwaits <- subset(faithful, "condition")
+```
+
+```{r subsetquiz-hint-2}
+longwaits <- subset(faithful, waiting > 30 * eruptions)
+```
+
+I'm giving you some data that has missing values. Compute the mean and standard deviation of the values that are still there. Don't manually change the values in data - this approach won't be convenient when you deal with larger data sets! You should get 11.66667 and 15.14376.
+
+```{r naquiz, exercise=TRUE}
+data <- c(1, 5, NA, 29, NA)
+```
+
+```{r naquiz-hint-1}
+c(mean(data), sd(data))
+"What is wrong with this?"
+```
+
+```{r naquiz-hint-2}
+c(mean(data, na.rm=TRUE), sd(data, na.rm=TRUE))
+```
+
+We're going to be exploring the iris data set, which contains observations of three different species of irises, as well as petal length and width and sepal length and width. Use tapply to find the median petal length (Petal.Length) of each species (Species)!
+
+You should find setosa's median is 1.50, versicolor's is 4.35, and virginica's is 5.55.
+
+Food for thought: do you think you can tell which species an observation belongs to just based on the petal and sepal measurements? This is a common task in machine learning!
+
+```{r tapplyquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r tapplyquiz-hint-1}
+tapply("", "", median)
+```
+
+```{r tapplyquiz-hint-2}
+tapply(iris$Petal.Length, "", median)
+```
+
+```{r tapplyquiz-hint-3}
+tapply(iris$Petal.Length, iris$Species, median)
+```
+
+## Exercises: Plotting & Modeling
+
+Make a boxplot and a histogram of old faithful's waiting time, using Scott's breaks!
+
+```{r boxhistquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r boxhistquiz-hint-1}
+boxplot(faithful$waiting)
+```
+
+```{r boxhistquiz-hint-2}
+boxplot(faithful$waiting)
+hist(faithful$waiting)
+```
+
+```{r boxhistquiz-hint-3}
+boxplot(faithful$waiting)
+hist(faithful$waiting, breaks="scott")
+```
+
+Now, make a scatterplot of the faithful data set, with the x-axis as eruptions (the duration of an eruption) and the y-axis as waiting (time to next eruption).
+
+```{r scatterquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r scatterquiz-hint-1}
+plot("x-axis", "y-axis")
+```
+
+```{r scatterquiz-hint-2}
+plot(faithful$eruptions, faithful$waiting) # or just plot(faithful)
+```
+
+Make a linear model predicting waiting time from eruption length and plot it on the graph! Does it look like a good fit?
+
+```{r modelquiz, exercise=TRUE}
+# Copy your answer from last exercise here!
+
+# Add the line of best fit!
+```
+
+```{r modelquiz-hint-1}
+plot(faithful)
+lm(faithful$waiting ~ faithful$eruptions)
+```
+
+```{r modelquiz-hint-2}
+plot(faithful)
+lm(faithful$waiting ~ faithful$eruptions)
+abline()
+```
+
+```{r modelquiz-hint-3}
+plot(faithful)
+model <- lm(faithful$waiting ~ faithful$eruptions)
+abline(model)
+```
+
+Congratulations! You've passed the Introduction to R.
