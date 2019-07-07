@@ -1,0 +1,236 @@
+---
+title: "R Visualization and Data Manipulation"
+author: 
+   name: "Corrin Fosmire"
+   affiliaton: "Rice University"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+runtime: shiny_prerendered
+output: learnr::tutorial
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(gdata)
+
+tidystates <- read_csv("tidystates.csv")
+```
+
+## Introduction
+
+This webpage will run through some exercises to help get you comfortable using the most modern techniques in R!
+
+## Exercises: tibbles
+
+Convert the data frame ``state.x77`` to a ``tibble``. Then, convert it back.
+
+```{r tibbleaquiz, exercise=TRUE}
+state.x77
+```
+
+```{r tibbleaquiz-hint-1}
+state77tibble <- as_tibble(state.x77)
+```
+
+```{r tibbleaquiz-hint-2}
+state77tibble <- as_tibble(state.x77)
+state77df <- as.data.frame(state77tibble)
+```
+
+Make the following data using a ``tribble``:
+
+<table width=400>
+<tr>
+ <th>Month</th>
+ <th>Savings</th>
+</tr>
+<tr>
+ <td>January</td>
+ <td>$100</td>
+</tr>
+<tr>
+ <td>February</td>
+ <td>$150</td>
+</tr>
+</table> 
+
+```{r tribbleaquiz, exercise=TRUE}
+#Enter your code here.
+```
+
+```{r tribbleaquiz-hint-1}
+tribble(
+  ~column,
+  value
+)
+```
+
+```{r tribbleaquiz-hint-2}
+tribble(
+  ~Month, ~Savings,
+  "January", 100,
+  "February", 150
+)
+```
+  
+## Exercises: tidying data
+
+Here's some data that might or might not be real. Regardless, it's not tidy, so take a look at it, and tidy it up!
+
+Here, try ``spread``ing the data out:
+
+```{r spreadquiz-setup, include=FALSE}
+very_real_data <- tibble(Department=c("Computer Science", "Computer Science", "Statistics", "Statistics", "English", "English"), type=c("Enrollment", "Faculty", "Enrollment", "Faculty", "Enrollment", "Faculty"), value=c(500, 20, 400, 15, 300, 10))
+```
+
+```{r spreadquiz, exercise=TRUE}
+very_real_data
+```
+
+```{r spreadquiz-hint-1}
+spread(very_real_data, "key column", "value column")
+```
+
+```{r spreadquiz-hint-2}
+spread(very_real_data, type, value)
+```
+
+Now, try to ``gather`` the data to make it tidy! Note that since the data has numerals (years) as column names, you will have to reference it using backticks, as in `2019`.
+
+```{r gatherquiz-setup, include=FALSE}
+real_data <- tibble(Department=c("Computer Science", "Statistics", "English"), `2018`=c(300, 400, 500), `2019`=c(500, 400, 300))
+```
+
+```{r gatherquiz, exercise=TRUE}
+real_data
+```
+
+```{r gatherquiz-hint-1}
+gather(real_data, "columns", key="?", value="?")
+```
+
+```{r gatherquiz-hint-2}
+gather(real_data, `2018`, `2019`, key="?", value="?")
+```
+
+```{r gatherquiz-hint-3}
+gather(real_data, `2018`, `2019`, key="Year", value="Enrollment")
+```
+
+## Exercises: readr
+
+First, read in the state data csv from ``tidystates.csv``. Make sure to use the readr ``read_csv`` and not the base R ``read.csv`` to get a ``tibble`` immediately! Then, import the fixed width file ``ufo.fwf`` with the widths of 6, 50, 15, 4, 4, 4, and 4. Label the columns as Year, Name, Location, PhysicalEffects, Multimedia, ETContact, and Abduction.
+
+```{r importquiz, exercise=TRUE}
+#Enter your code here.
+```
+
+```{r importquiz-hint-1}
+read_csv
+read_fwf
+
+ufofwf
+```
+
+```{r importquiz-hint-2}
+read_csv("tidystates.csv")
+ufofwf <- read_fwf("ufo.fwf", fwf_widths(c(6, 50, 15, 4, 4, 4, 4)))
+
+ufofwf
+```
+
+```{r importquiz-hint-3}
+read_csv("tidystates.csv")
+ufofwf <- read_fwf("ufo.fwf", fwf_widths(c(6, 50, 15, 4, 4, 4, 4)))
+colnames(ufofwf) <- c("Year", "Name", "Location", "PhysicalEffects", "Multimedia", "ETContact", "Abduction")
+
+ufofwf
+```
+
+## Exercise: purrr
+
+Use ``map2`` to format the following message for each row of the ``tidystates`` tibble: STATE has population POPULATION! Replace the two arguments in the printing command.
+
+```{r map2quiz, exercise=TRUE}
+# Use the printing command:
+#    sprintf("%s has population %d!", STATE, POPULATION)
+# but replace STATE and POPULATION!
+
+```
+
+```{r map2quiz-hint-1}
+map2("column1", "column2", ~ sprintf("%s has population %d!", .x, .y))
+```
+
+```{r map2quiz-hint-2}
+map2(tidystates$State, tidystates$Population, ~ sprintf("%s has population %d!", .x, .y))
+```
+
+Use ``keep`` to take only the state populations with populations above 2 million (note that population is here measured in 1000s, so this is 2000). Use ``discard`` to remove the state areas under 50000 square miles.
+
+```{r keepdiscardquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r keepdiscardquiz-hint-1}
+purrr::keep(tidystates$Population, "condition formula")
+discard(tidystates$Area, "condition formula")
+```
+
+```{r keepdiscardquiz-hint-2}
+purrr::keep(tidystates$Population, ~ .x > 2000)
+discard(tidystates$Area, ~ .x < 50000)
+```
+
+Check to see whether all the illiteracy rate of every state is under 2.5% (use ``every``). Check to see whether there is a state with a murder rate of higher than 15 per 100,000 (use ``some``).
+
+```{r everysomequiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r everysomequiz-hint-1}
+every(tidystates$Illiteracy, "condition formula")
+some(tidystates$Murder, "condition formula")
+```
+
+```{r everysomequiz-hint-2}
+every(tidystates$Illiteracy, ~.x < 2.5)
+some(tidystates$Murder, ~.x > 15)
+```
+
+## Exercise: dplyr
+
+Filter
+
+Pull / Select
+
+Join / Merge
+
+Arrange
+
+Combine!
+
+## Exercise: ggplot
+
+Scatterplots
+
+Boxplots / Histograms
+
+Facets
+
+Labels
+
+Colors
+
+Themes
+
+## Exercise: everything before
+
+## Reference
+
+It's a good idea to get in the habit of using RStudio's amazing cheatsheets. You can find them in the Help -> Cheatsheets menu. Here are a few extremely useful ones, for today and beyond:
+
+* [readr & tidying (importing)](https://github.com/rstudio/cheatsheets/blob/master/data-import.pdf)
+* [dplyr (data manipulation)](https://github.com/rstudio/cheatsheets/blob/master/data-transformation.pdf)
+* [purrr (vector manipulation)](https://github.com/rstudio/cheatsheets/blob/master/purrr.pdf)
+* [ggplot2 (plotting)](https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf)
