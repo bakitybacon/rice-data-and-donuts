@@ -11,12 +11,12 @@ output: learnr::tutorial
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
-library(gdata)
+library(viridis)
 library(datasets)
 
 knitr::opts_knit$set(root.dir = "/home/infrared/datademoes/")
 knitr::opts_chunk$set(root.dir = "/home/infrared/datademoes/")
-tidystates <- read_csv("/home/infrared/tidystates.csv")
+tidystates <- read_csv("/home/infrared/datademoes/tidystates.csv")
 ```
 
 ## Introduction
@@ -300,7 +300,7 @@ tidystates <- filter(tidystates, Illiteracy <= 1)
 tidystates <- mutate(tidystates, Density = Population / Area)
 regions <- tibble(State=state.name, Region=state.region)
 tidystates <- inner_join(tidystates, regions, by="State")
-tidystates <- group_by(tidystates, regions)
+tidystates <- group_by(tidystates, Region)
 ```
 
 ```{r summarizequiz, exercise=TRUE}
@@ -336,19 +336,225 @@ tidystates %>%
 
 ## Exercises: ggplot
 
-Scatterplots
+```{r ggplotsetupchunk, include=FALSE, echo=FALSE}
+regions <- tibble(State=state.name, Region=state.region)
+tidystates <- tidystates %>%
+  mutate(Density = Population / Area) %>%
+  inner_join(regions, by="State")
+```
 
-Boxplots / Histograms
+Make a scatterplot of state ``Population`` by ``Area``.
 
-Facets
+```{r ggscatterquiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
 
-Labels
+```{r ggscatterquiz-hint-1}
+ggplot(data = tidystates) +
+  geom_point(mapping = "?")
+```
 
-Colors
+```{r ggscatterquiz-hint-2}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population))
+```
 
-Themes
+Improve that plot by adding a color indicating which ``Region`` each state is in!
+
+```{r ggscatter2quiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r ggscatter2quiz-hint-1}
+ggplot(data = tidystates) +
+  geom_point(mapping = "?")
+```
+
+```{r ggscatter2quiz-hint-2}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = Region))
+```
+
+Make a histogram and a boxplot of state ``Income``. Note that histogram maps ``x``, while boxplot maps ``y``!
+
+```{r gghistboxquiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r gghistboxquiz-hint-1}
+ggplot(data = tidystates) +
+  geom_histogram(mapping = "?")
+
+ggplot(data = tidystates) +
+  geom_boxplot(mapping = "?")
+```
+
+```{r gghistboxquiz-hint-2}
+ggplot(data = tidystates) +
+  geom_histogram(mapping = aes(x = Income))
+
+ggplot(data = tidystates) +
+  geom_boxplot(mapping = aes(y = Income))
+```
+
+Use facets to visualize our earlier scatter plot by region. Note how this shoes the data of our colored scatterplot in a slightly different way!
+
+```{r ggscatter3quiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r ggscatter3quiz-hint-1}
+ggplot(data = tidystates) +
+  geom_point(mapping = "?")
+```
+
+```{r ggscatter3quiz-hint-2}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population)) +
+  facet_wrap(~ Region, nrow = 2)
+```
+
+Add a main title to our colored scatterplot!
+
+```{r ggscatter4quiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r ggscatter4quiz-hint-1}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = Region)) +
+  labs()
+```
+
+```{r ggscatter4quiz-hint-2}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = Region)) +
+  labs(title = "Area and Population of U.S. States")
+```
+
+Make our scatterplot again, this time using ``Income`` as our color mapping with ``scale_color_viridis``!
+
+```{r ggscatter5quiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r ggscatter5quiz-hint-1}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = "?")) +
+  scale_color_viridis() +
+  labs(title = "Area and Population of U.S. States")
+```
+
+```{r ggscatter5quiz-hint-2}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = Income)) +
+  scale_color_viridis() +
+  labs(title = "Area and Population of U.S. States")
+```
+
+Now, try out the themes for our plot. They are
+
+* theme_bw()
+* theme_classic()
+* theme_dark()
+* theme_gray()
+* theme_light()
+* theme_linedraw()
+* theme_minimal()
+* theme_void()
+
+Just pick one you think looks nice!
+
+```{r ggscatter6quiz, exercise.setup="ggplotsetupchunk", exercise=TRUE}
+ggplot(data = tidystates) +
+```
+
+```{r ggscatter6quiz-solution}
+ggplot(data = tidystates) +
+  geom_point(mapping = aes(x = Area, y = Population, color = Income)) +
+  scale_color_viridis() +
+  labs(title = "Area and Population of U.S. States") +
+  theme_bw() #or anything else!
+```
 
 ## Exercises: everything before
+
+For your Final Exam, I'm giving you a new data set, called ``agdata``. It measures the total agricultural production by county. Do all of the following, using as much %>% and + as you can:
+
+* Group the data by state.
+* Sum all the value produced by each state.
+* Perform an inner join with our ``tidystates`` data on the ``State`` column.
+* Send the data to ggplot.
+* Add a scatterplot layer.
+* Add a title to the plot.
+* Use the dark theme.
+
+Each hint will give you one step.
+
+```{r finalexam, exercise=TRUE}
+
+```
+
+```{r finalexam-hint-1}
+agdata %>%
+  group_by(State)
+```
+
+```{r finalexam-hint-2}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value))
+```
+
+```{r finalexam-hint-3}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value)) %>%
+  inner_join(tidystates, by="State") 
+```
+
+```{r finalexam-hint-4}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value)) %>%
+  inner_join(tidystates, by="State") %>% 
+  ggplot()
+```
+
+```{r finalexam-hint-5}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value)) %>%
+  inner_join(tidystates, by="State") %>% 
+  ggplot() +
+  geom_point(size=1, shape=23, mapping = aes(Income, total)) 
+```
+
+```{r finalexam-hint-6}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value)) %>%
+  inner_join(tidystates, by="State") %>% 
+  ggplot() +
+  geom_point(size=1, shape=23, mapping = aes(Income, total)) +
+  labs(x = "Income of State", y = "Total Agricultural Production of State",
+       title = "Income and Total Agricultural Production by State")
+```
+
+
+```{r finalexam-hint-7}
+agdata %>%
+  group_by(State) %>%
+  summarize(total = sum(Value)) %>%
+  inner_join(tidystates, by="State") %>% 
+  ggplot() +
+  geom_point(size=1, shape=23, mapping = aes(Income, total)) +
+  labs(x = "Income of State", y = "Total Agricultural Production of State",
+       title = "Income and Total Agricultural Production by State") +
+  theme_bw()
+```
+
+Congratulations! You're now an expert at data manipulation and visualization in R.
 
 ## Reference
 
