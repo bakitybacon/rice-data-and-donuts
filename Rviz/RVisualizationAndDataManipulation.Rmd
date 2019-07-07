@@ -12,8 +12,11 @@ output: learnr::tutorial
 library(learnr)
 library(tidyverse)
 library(gdata)
+library(datasets)
 
-tidystates <- read_csv("tidystates.csv")
+knitr::opts_knit$set(root.dir = "/home/infrared/datademoes/")
+knitr::opts_chunk$set(root.dir = "/home/infrared/datademoes/")
+tidystates <- read_csv("/home/infrared/tidystates.csv")
 ```
 
 ## Introduction
@@ -147,7 +150,7 @@ colnames(ufofwf) <- c("Year", "Name", "Location", "PhysicalEffects", "Multimedia
 ufofwf
 ```
 
-## Exercise: purrr
+## Exercises: purrr
 
 Use ``map2`` to format the following message for each row of the ``tidystates`` tibble: STATE has population POPULATION! Replace the two arguments in the printing command.
 
@@ -200,17 +203,138 @@ some(tidystates$Murder, ~.x > 15)
 
 ## Exercise: dplyr
 
-Filter
+We're going to be using our ``tidystates`` data to practice our new operations. 
 
-Pull / Select
+Filtering: Get me all the states which have illiteracy rates less than or equal to 1%.
 
-Join / Merge
+```{r filterquiz, exercise=TRUE}
+# Enter your code here.
+```
 
-Arrange
+```{r filterquiz-hint-1}
+filter(tidystates, "condition")
+```
 
-Combine!
+```{r filterquiz-hint-2}
+filter(tidystates, Illiteracy <= 1)
+```
 
-## Exercise: ggplot
+Mutating: Add a new column giving the population density by taking ``Population`` divided by ``Area``. Use ``mutate`` first, then change it to ``transmute`` to observe the difference.
+
+```{r mutatequiz-setup}
+tidystates <- filter(tidystates, Illiteracy <= 1)
+```
+
+```{r mutatequiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r mutatequiz-hint-1}
+mutate(tidystates, "operation")
+```
+
+```{r mutatequiz-hint-2}
+mutate(tidystates, Density = Population / Area)
+```
+
+Arrange: Sort the states from highest to lowest murder rate.
+
+```{r arrangequiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r arrangequiz-hint-1}
+arrange(tidystates, "column")
+```
+
+```{r arrangequiz-hint-2}
+arrange(tidystates, desc(Murder))
+```
+
+Join: Add in the region using the ``regions`` data frame I'm giving you. Do an ``inner_join`` on ``State``!
+
+```{r joinquiz-setup}
+tidystates <- filter(tidystates, Illiteracy <= 1)
+tidystates <- mutate(tidystates, Density = Population / Area)
+regions <- tibble(State=state.name, Region=state.region)
+```
+
+```{r joinquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r joinquiz-hint-1}
+inner_join(tidystates, regions, by="?")
+```
+
+```{r joinquiz-hint-2}
+inner_join(tidystates, regions, by="State")
+```
+
+Group By: Group states by their region and count how many are in each region.
+
+```{r groupbyquiz-setup}
+tidystates <- filter(tidystates, Illiteracy <= 1)
+tidystates <- mutate(tidystates, Density = Population / Area)
+regions <- tibble(State=state.name, Region=state.region)
+tidystates <- inner_join(tidystates, regions, by="State")
+```
+
+```{r groupbyquiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r groupbyquiz-hint-1}
+group_by(tidystates, Region)
+```
+
+```{r groupbyquiz-hint-2}
+group_by(tidystates, Region) %>%
+  count()
+```
+
+Summarize: Now, calculate the average population density of each region.
+
+```{r summarizequiz-setup}
+tidystates <- filter(tidystates, Illiteracy <= 1)
+tidystates <- mutate(tidystates, Density = Population / Area)
+regions <- tibble(State=state.name, Region=state.region)
+tidystates <- inner_join(tidystates, regions, by="State")
+tidystates <- group_by(tidystates, regions)
+```
+
+```{r summarizequiz, exercise=TRUE}
+# Enter your code here.
+```
+
+```{r summarizequiz-hint-1}
+summarize(tidystates, "operation")
+```
+
+```{r summarizequiz-hint-2}
+summarize(tidystates, avgdensity = mean(Density))
+```
+
+Now, do all that in one go with the pipe operator! (%>%) You don't need to do the arrange, since it won't change the answer.
+
+```{r pipequiz-setup}
+regions <- tibble(State=state.name, Region=state.region)
+```
+
+```{r pipequiz, exercise=TRUE}
+tidystates %>%
+```
+
+```{r pipequiz-solution}
+tidystates %>%
+  filter(Illiteracy <= 1) %>%
+  mutate(Density = Population / Area) %>%
+  inner_join(regions, by="State") %>%
+  group_by(Region) %>%
+  summarize(avgdensity = mean(Density))
+```
+
+## Exercises: ggplot
 
 Scatterplots
 
@@ -224,7 +348,7 @@ Colors
 
 Themes
 
-## Exercise: everything before
+## Exercises: everything before
 
 ## Reference
 
