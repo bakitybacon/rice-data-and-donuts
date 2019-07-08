@@ -492,7 +492,7 @@ For your Final Exam, I'm giving you a new data set, called ``agdata``. It measur
 Each hint will give you one step.
 
 ```{r finalexam, exercise=TRUE}
-
+# Enter your code here.
 ```
 
 ```{r finalexam-hint-1}
