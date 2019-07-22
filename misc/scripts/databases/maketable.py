@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import airtableapi as at
 import re
+import sys
 
 fields = ["Serial", "SID", "Submitted Time", "Full Name",
     "Email Address", "Rice NetID", "Rice Affiliation",
@@ -13,7 +14,7 @@ courses = ['Python Data Visualization with Matplotlib: Tuesday July 9 2019 @ 1-2
 base = "approTOf3L5vt6c3Y"
 table = "Course Data"
 
-def make_tables(app, table, key):
+def make_table(course, app, table, key):
     """
     Finds current registrations for each course and spits out a csv
     containing the Full Name, Email Address, Rice Affiliation, and 
@@ -21,12 +22,11 @@ def make_tables(app, table, key):
     """
     recordframe = at.read_all(app, table, key)
 
-    for course in courses:
-        coursedata = recordframe[recordframe[course] == "X"]
-        neededplus = list(needed)
-        neededplus.append(course)
-        coursedata = coursedata[neededplus]
-        coursedata.to_csv(course+".csv", index=False)
+    coursedata = recordframe[recordframe[course] == "X"]
+    neededplus = list(needed)
+    neededplus.append(course)
+    coursedata = coursedata[neededplus]
+    coursedata.to_csv(course+".csv", index=False)
 
 with open("key.txt") as f:
     key = f.readline().strip()
@@ -35,4 +35,13 @@ if not key:
     print("Could not read key!")
     exit(1)
 
-make_tables(base, table, key)
+if sys.argv[1] == "all":
+    for course in courses:
+        make_table(course, base, table, key)
+    exit(0)
+
+if not sys.argv[1]:
+    print("Please specify a table to create!")
+    exit(1)
+
+make_table(sys.argv[1], base, table, key)
