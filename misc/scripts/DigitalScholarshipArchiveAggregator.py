@@ -171,10 +171,10 @@ if 'python' in sys.argv[0]:
     args = args[1:]
 
 if len(args) > 1 and args[1]:
-    aggregate_community(args[1])
+    print(aggregate_community(args[1]))
 
 else:
     # CLI: passing by stdin
-    community = input('Enter Community Name Here >')
-    aggregate_community(community)
+    community = input('Enter Community Name Here > ')
+    print(aggregate_community(community))
 
