@@ -5,6 +5,8 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 import sys
 
+## The following code uses the REST API provided by Rice's Digital Scholarship Archive (https://scholarship.rice.edu/rest) to aggregate statistics for file views present in the archive by community and collection.
+
 def get_community(jsonroot, name):
     """
     Recursively find a community in dictionary jsonroot 
