@@ -8,6 +8,12 @@ daydata <- pickups %>%
   group_by(day) %>%
   summarize(count=n())
 
+daydata %>%
+  ggplot() +
+  geom_point(mapping=aes(day, count)) +
+  geom_line(mapping=aes(day, count)) +
+  labs(title="Uber Pickups by Day between January and June 2015")
+
 linearmod <- lm("count ~ day", daydata)
 linearfit <- predict.lm(linearmod)
 
