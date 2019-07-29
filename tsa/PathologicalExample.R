@@ -11,8 +11,8 @@ linearmodel <- lm(pathdata$y ~ pathdata$x)
 linearfit <- predict.lm(linearmodel)
 
 ggplot(pathdata) +
-  geom_point(mapping=aes(x, y), color="black") +
-  geom_point(mapping=aes(x, linearfit), color="red") +
+  geom_line(mapping=aes(x, y), color="black") +
+  geom_line(mapping=aes(x, linearfit), color="red") +
   labs(title = "Simple Linear Regression Sample Model")
 
 # adf.test(y, alternative="stationary")
@@ -20,6 +20,6 @@ arimamodel <- arima(pathdata$y, order=c(1,1,0))
 arimafit <- as.vector(forecast(arimamodel, h=8)$mean)
 
 ggplot(pathdata) +
-  geom_point(mapping=aes(x, y), color="black") +
-  geom_point(mapping=aes(x, arimafit), color="red") +
+  geom_line(mapping=aes(x, y), color="black") +
+  geom_line(mapping=aes(x, arimafit), color="red") +
   labs(title = "Time Series Sample Model")
