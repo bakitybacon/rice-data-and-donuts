@@ -208,6 +208,8 @@ daydata_test <- daydata %>%
 arimamodel <- arima(daydata_train$count, order=c(26,1,0), seasonal=c(1, 1, 24))
 arimafit <- as.vector(forecast(arimamodel, h=32))
 
+arimamre <- mean((daydata_test$count - arimafit$mean)/daydata_test$count)
+
 ggplot() +
   geom_point(mapping=aes(daydata$day, daydata$count)) +
   geom_line(mapping=aes(daydata$day, daydata$count)) +
@@ -216,6 +218,8 @@ ggplot() +
   geom_ribbon(mapping=aes(x=daydata_test$day, ymin=as.vector(arimafit$lower[,1]), ymax=as.vector(arimafit$upper[,1])), color="gray", fill="red", alpha=0.2) +
   geom_vline(mapping=aes(xintercept=150), color="blue") + 
   labs(title="A Fitted Arima Model", y="Pickup Count", x="Day")
+
+# Seasonal decompose of arima
 
 # Sample prophet model + plot
 
@@ -232,6 +236,8 @@ prophet_test$ds <- day1 + days(prophet_test$ds - 1)
 prophetmodel <- prophet(prophet_train, fit=TRUE, daily.seasonality = TRUE, weekly.seasonality = TRUE)
 prophetfit <- predict(prophetmodel, prophet_test)
 
+prophetmre <- mean((daydata_test$count - prophetfit$yhat)/daydata_test$count)
+
 ggplot() +
   geom_point(mapping=aes(daydata$day, daydata$count)) +
   geom_line(mapping=aes(daydata$day, daydata$count)) +
@@ -240,6 +246,8 @@ ggplot() +
   geom_ribbon(mapping=aes(x=daydata_test$day, ymin=prophetfit$yhat_lower, ymax=prophetfit$yhat_upper), color="gray", fill="red", alpha=0.2) +
   geom_vline(mapping=aes(xintercept=150), color="blue") + 
   labs(title="A Fitted Prophet Model", y="Pickup Count", x="Day")
+
+# Seasonal decompose of prophet
 
 # A tensorflow RNN model
 
