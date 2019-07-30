@@ -88,3 +88,39 @@ holidaysvsnot %>%
   ggplot() +
   geom_col(mapping=aes(holidays, pickupsperday)) +
   labs(y="Pickups Per Day")
+
+daydata %>%
+  mutate(detrended=count-linearfit) %>%
+  ggplot() +
+  geom_point(mapping=aes(day, detrended)) +
+  geom_line(mapping=aes(day, detrended)) +
+  labs(title="Uber Pickups by Day between January and June 2015, Detrended")
+
+daydata %>%
+  mutate(differenced=count-lag(count)) %>%
+  drop_na() %>%
+  ggplot() +
+  geom_point(mapping=aes(day, differenced)) +
+  geom_line(mapping=aes(day, differenced)) +
+  labs(title="Uber Pickups by Day between January and June 2015, 1st Order Difference")
+
+daydata %>%
+  mutate(differenced=count-lag(count, 7)) %>%
+  drop_na() %>%
+  ggplot() +
+  geom_point(mapping=aes(day, differenced)) +
+  geom_line(mapping=aes(day, differenced)) +
+  labs(title="Uber Pickups by Day between January and June 2015, 7th Order Difference")
+
+daydata %>%
+  mutate(differenced=count-lag(count, 7)) %>%
+  drop_na() %>%
+  mutate(differenced=differenced-lag(differenced)) %>%
+  drop_na() %>%
+  ggplot() +
+  geom_point(mapping=aes(day, differenced)) +
+  geom_line(mapping=aes(day, differenced)) +
+  labs(title="Uber Pickups by Day between January and June 2015, 1st and 7th Order Difference")
+
+# TODO make this do ggplot stuff  
+lag.plot(daydata$count, 9, diag=FALSE)
