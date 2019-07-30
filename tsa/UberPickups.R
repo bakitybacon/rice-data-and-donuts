@@ -5,8 +5,8 @@ library(timeDate)
 library(forecast)
 library(tseries)
 library(prophet)
-library(keras)
-library(tensorflow)
+#library(keras)
+#library(tensorflow)
 
 pickups <- read_csv("uber-raw-data-janjune-15.csv")
 
@@ -60,14 +60,14 @@ daydata %>%
   geom_point(mapping=aes(day, count)) +
   geom_line(mapping=aes(day, count)) +
   geom_line(mapping=aes(day, linearfit), color="red") +
-  labs(title="Uber Pickups by Day between January and June 2015 with Trend")
+  labs(title="Uber Pickups by Day between January and June 2015 with Trend",  y="Pickup Count", x="Day")
 
 daydata %>%
   mutate(detrended=count-linearfit) %>%
   ggplot() +
   geom_point(mapping=aes(day, detrended)) +
   geom_line(mapping=aes(day, detrended)) +
-  labs(title="Uber Pickups by Day between January and June 2015, Detrended")
+  labs(title="Uber Pickups by Day between January and June 2015, Detrended",  y="Pickup Count", x="Day")
 
 # Messing around with holidays
 
