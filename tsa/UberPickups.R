@@ -54,12 +54,15 @@ pickups %>%
   labs(title="Uber Pickups by Hour between January and June 2015")
 
 some_holidays <- tribble(
-  ~name, ~date,
-  "New Year's Day", ymd("2015-01-01"),
-  "MLK Day", ymd("2015-01-19"),
-  "Valentine's Day", ymd("2015-02-14"),
-  "Presidents' Day", ymd("2015-02-16"),
-  "Memorial Day", ymd("2015-05-25"))
+  ~name, ~datestr,
+  "New Year's Day", "20150101",
+  "MLK Day", "20150119",
+  "Valentine's Day", "20150214",
+  "Presidents' Day", "20150216",
+  "Memorial Day", "20150525"
+  )
+
+some_holidays$date <- as_date(some_holidays$datestr)
 
 holidays <- pickups %>%
   mutate(date=as_date(Pickup_date)) %>%
