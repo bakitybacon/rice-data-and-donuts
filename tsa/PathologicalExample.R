@@ -17,7 +17,7 @@ ggplot(pathdata) +
   geom_point(mapping=aes(x, linearfit), color="red") +
   labs(title = "Simple Linear Regression Sample Model")
 
-# adf.test(y, alternative="stationary")
+adf.test(pathdata$y, alternative="stationary")
 arimamodel <- arima(pathdata$y, order=c(1,1,0))
 arimafit <- as.vector(forecast(arimamodel, h=8)$mean)
 
