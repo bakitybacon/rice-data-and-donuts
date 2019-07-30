@@ -5,8 +5,8 @@ library(timeDate)
 library(forecast)
 library(tseries)
 library(prophet)
-#library(keras)
-#library(tensorflow)
+library(keras)
+library(tensorflow)
 
 pickups <- read_csv("uber-raw-data-janjune-15.csv")
 
@@ -219,8 +219,6 @@ ggplot() +
   geom_vline(mapping=aes(xintercept=150), color="blue") + 
   labs(title="A Fitted Arima Model", y="Pickup Count", x="Day")
 
-# Seasonal decompose of arima
-
 # Sample prophet model + plot
 
 prophet_train <- daydata_train
@@ -248,7 +246,167 @@ ggplot() +
   labs(title="A Fitted Prophet Model", y="Pickup Count", x="Day")
 
 # Seasonal decompose of prophet
+prophet_plot_components(prophetfit)
 
-# A tensorflow RNN model
+# Tensorflow setup
+tf$InteractiveSession()
+tf$GPUOptions$allow_growth <- TRUE
+
+tf_train_x <- array_reshape(as.array(daydata_train$day), c(nrow(daydata_train), 1, 1))
+tf_train_y <- array_reshape(as.array(daydata_train$count), c(nrow(daydata_train), 1, 1))
+tf_test_x <- array_reshape(as.array(daydata_test$day), c(nrow(daydata_test), 1, 1))
+tf_test_y <- array_reshape(as.array(daydata_test$count), c(nrow(daydata_test), 1, 1))
+
+# A tensorflow simple RNN model
+rnn <- keras_model_sequential()
+rnn %>%
+  layer_simple_rnn(1, return_sequences=TRUE, input_shape = c(1, 1)) %>%
+  layer_activation_relu() %>%
+  layer_dense(1)
+
+rnn %>%
+  compile(
+    optimizer = "adam",
+    loss = "mean_absolute_percentage_error"
+  )
+
+rnn %>% 
+  fit(
+    tf_train_x, tf_train_y,
+    epochs = 30,
+    validation_split = 0.2
+  )
+
+rnn %>%
+  evaluate(tf_test_x, tf_test_y)
+
+rnnfit <- rnn %>%
+  predict(tf_test_x)
+
+ggplot() +
+  geom_point(mapping=aes(daydata$day, daydata$count)) +
+  geom_line(mapping=aes(daydata$day, daydata$count)) +
+  geom_point(mapping=aes(daydata_test$day, as.vector(rnnfit)), color="red") +
+  geom_line(mapping=aes(daydata_test$day, as.vector(rnnfit)), color="red") +
+  geom_vline(mapping=aes(xintercept=150), color="blue") + 
+  labs(title="A Fitted Simple RNN Model", y="Pickup Count", x="Day")
 
 # A tensorflow LSTM model
+lstm <- keras_model_sequential()
+lstm %>%
+  layer_lstm(units=1, return_sequences=TRUE, input_shape = c(1, 1)) %>%
+  layer_activation_relu() %>%
+  layer_dense(1)
+
+lstm %>%
+  compile(
+    optimizer = "adam",
+    loss = "mean_absolute_percentage_error"
+  )
+
+lstm %>% 
+  fit(
+    tf_train_x, tf_train_y,
+    epochs = 30,
+    validation_split = 0.2
+  )
+
+lstm %>%
+  evaluate(tf_test_x, tf_test_y)
+
+lstmfit <- lstm %>%
+  predict(tf_test_x)
+
+ggplot() +
+  geom_point(mapping=aes(daydata$day, daydata$count)) +
+  geom_line(mapping=aes(daydata$day, daydata$count)) +
+  geom_point(mapping=aes(daydata_test$day, as.vector(lstmfit)), color="red") +
+  geom_line(mapping=aes(daydata_test$day, as.vector(lstmfit)), color="red") +
+  geom_vline(mapping=aes(xintercept=150), color="blue") + 
+  labs(title="A Fitted LSTM Model", y="Pickup Count", x="Day")
+
+# RNN and LSTM with actually enough data
+minutedata <- pickups %>%
+  mutate(day=yday(Pickup_date)) %>%
+  mutate(hour=hour(Pickup_date)) %>%
+  mutate(minute=minute(Pickup_date)) %>%
+  group_by_at(vars(day, hour, minute)) %>%
+  summarize(count=n())
+
+# preprocess data
+#  step 1: differencing by 1 and 7 (day, week)
+#  step 2: order 7 moving average
+#  step 3: 0-1 scaling
+
+minutedata <- minutedata %>%
+  mutate(count=count-lag(count, 1)) %>%
+  drop_na() %>%
+  mutate(count=count-lag(count, 7)) %>%
+  drop_na() %>%
+  mutate(count=ma(count, 7, centre=FALSE)) %>%
+  drop_na() %>%
+  mutate(count=count-min(count)) %>%
+  mutate(count=count/max(count))
+
+minutedata_train <- minutedata %>%
+  filter(day < 150)
+
+minutedata_test <- minutedata %>%
+  filter(day >= 150)
+
+minutedata_train <- rowid_to_column(minutedata_train)
+minutedata_test <- rowid_to_column(minutedata_test)
+minutedata_test$rowid <- minutedata_test$rowid + nrow(minutedata_train)
+
+min_train_x <- array_reshape(as.array(minutedata_train$rowid), c(nrow(minutedata_train), 1, 1))
+min_train_y <- array_reshape(as.array(minutedata_train$count), c(nrow(minutedata_train), 1, 1))
+min_test_x <- array_reshape(as.array(minutedata_test$rowid), c(nrow(minutedata_test), 1, 1))
+min_test_y <- array_reshape(as.array(minutedata_test$count), c(nrow(minutedata_test), 1, 1))
+
+biglstm <- keras_model_sequential()
+biglstm %>%
+  layer_lstm(units=100, return_sequences=TRUE, input_shape = c(1, 1)) %>%
+  layer_activation_relu() %>%
+  layer_lstm(units=100, return_sequences=TRUE) %>%
+  layer_activation_relu() %>%
+  layer_lstm(units=50, return_sequences=TRUE) %>%
+  layer_activation_relu() %>%
+  layer_dense(300) %>%
+  layer_activation_relu() %>%
+  layer_dense(50) %>%
+  layer_activation_relu() %>%
+  layer_dense(1)
+
+biglstm %>%
+  compile(
+    optimizer = "adam",
+    loss = "mean_absolute_percentage_error"
+  )
+
+tensorboard("logs/lstm")
+
+biglstm %>% 
+  fit(
+    min_train_x, min_train_y,
+    epochs = 300,
+    validation_split = 0.2,
+    callbacks = callback_tensorboard("logs/lstm")
+  )
+
+  biglstm %>%
+  evaluate(min_test_x, min_test_y)
+
+biglstmfit <- biglstm %>%
+  predict(min_test_x)
+
+# sum up to day level
+biglstmfit <- array_reshape(biglstmfit, c(24, length(biglstmfit) / 24))
+biglstmfit <- colSums(biglstmfit)
+
+ggplot() +
+  geom_point(mapping=aes(daydata$day, daydata$count)) +
+  geom_line(mapping=aes(daydata$day, daydata$count)) +
+  geom_point(mapping=aes(daydata_test$day, as.vector(biglstmfit)), color="red") +
+  geom_line(mapping=aes(daydata_test$day, as.vector(biglstmfit)), color="red") +
+  geom_vline(mapping=aes(xintercept=150), color="blue") + 
+  labs(title="A Fitted LSTM Model", y="Pickup Count", x="Day")
