@@ -1,5 +1,7 @@
 library(tidyverse)
 library(lubridate)
+library(timeDate)
+library(tis)
 
 pickups <- read_csv("uber-raw-data-janjune-15.csv")
 
@@ -50,3 +52,36 @@ pickups %>%
   geom_point(mapping=aes(hour, count)) +
   geom_line(mapping=aes(hour, count))  +
   labs(title="Uber Pickups by Hour between January and June 2015")
+
+some_holidays <- tribble(
+  ~name, ~date,
+  "New Year's Day", ymd("2015-01-01"),
+  "MLK Day", ymd("2015-01-19"),
+  "Valentine's Day", ymd("2015-02-14"),
+  "Presidents' Day", ymd("2015-02-16"),
+  "Memorial Day", ymd("2015-05-25"))
+
+holidays <- pickups %>%
+  mutate(date=as_date(Pickup_date)) %>%
+  filter(date %in% as_date(some_holidays$date)) %>%
+  mutate(day=yday(Pickup_date)) %>%
+  group_by(day) %>%
+  summarize(total=n())
+
+notholidays <- pickups %>%
+  mutate(date=as_date(Pickup_date)) %>%
+  filter(!(date %in% as_date(some_holidays$date))) %>%
+  mutate(day=yday(Pickup_date)) %>%
+  group_by(day) %>%
+  summarize(total=n())
+
+holidaysvsnot <- tribble(
+  ~holidays, ~pickupsperday,
+  "Yes", sum(holidays$total) / nrow(holidays),
+  "No", sum(notholidays$total) / nrow(notholidays)
+)
+
+holidaysvsnot %>%
+  ggplot() +
+  geom_col(mapping=aes(holidays, pickupsperday)) +
+  labs(y="Pickups Per Day")
