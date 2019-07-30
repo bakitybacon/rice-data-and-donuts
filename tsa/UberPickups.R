@@ -122,5 +122,16 @@ daydata %>%
   geom_line(mapping=aes(day, differenced)) +
   labs(title="Uber Pickups by Day between January and June 2015, 1st and 7th Order Difference")
 
-# TODO make this do ggplot stuff  
-lag.plot(daydata$count, 9, diag=FALSE)
+lag_scatter <- function(datavector, laglevel) {
+  print(laglevel)
+  ggplot() +
+    geom_point(mapping=aes(datavector, lag(datavector, laglevel))) +
+    geom_smooth(mapping=aes(datavector, lag(datavector, laglevel)), method = "loess", size = 1.5) +
+    labs(y=str_c("Lagged Pickups of Order ",as.character(laglevel)),
+         x="Day of Year")
+  ggsave(str_c("pickupslaggedgg", as.character(laglevel), ".png"),
+         width=4, height=4)
+}
+
+as.vector(1:9) %>%
+  map(~ lag_scatter(daydata$count, .x))
