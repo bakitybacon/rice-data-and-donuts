@@ -173,7 +173,7 @@ maorders %>%
 
 confbound <- qnorm((1 + 0.95)/2)/sqrt(nrow(daydata))
 
-acf_vector <- as.vector(acf(daydata$count, plot=FALSE)$acf)
+acf_vector <- as.vector(acf(daydata$count, lag.max = 33, plot=FALSE)$acf)
 acftibble <- tibble(lag=0:(length(acf_vector)-1), acf=acf_vector)
 acftibble %>%
   mutate(minconf=-confbound) %>%
