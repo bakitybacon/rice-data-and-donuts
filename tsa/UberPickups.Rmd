@@ -1,0 +1,125 @@
+---
+title: "Uber Pickups Analysis"
+author: "Corrin Fosmire"
+date: "7/30/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "~")
+```
+
+# Analysis of Uber Pickups Data
+
+## Importing Data
+
+```{r}
+pickups <- read_csv("uber-raw-data-janjune-15.csv")
+daydata <- pickups %>%
+  mutate(day=yday(Pickup_date)) %>%
+  group_by(day) %>%
+  summarize(count=n())
+```
+
+## Exploratory Data Analysis
+
+Plotting day-by-day, by month, day of month, day of week, and by hour.
+
+
+```{r}
+daydata %>%
+  ggplot() +
+  geom_point(mapping=aes(day, count)) +
+  geom_line(mapping=aes(day, count)) +
+  labs(title="Uber Pickups by Day of Year between January and June 2015", y="Pickup Count", x="Day")
+```
+
+```{r}
+pickups %>%
+  mutate(month=month(Pickup_date)) %>%
+  group_by(month) %>%
+  summarize(count=n()) %>%
+  ggplot() +
+  geom_point(mapping=aes(month, count)) +
+  geom_line(mapping=aes(month, count))  +
+  labs(title="Uber Pickups by Month between January and June 2015",  y="Pickup Count", x="Month")
+```
+
+```{r}
+pickups %>%
+  mutate(day=day(Pickup_date)) %>%
+  group_by(day) %>%
+  summarize(count=n()) %>%
+  ggplot() +
+  geom_point(mapping=aes(day, count)) +
+  geom_line(mapping=aes(day, count))  +
+  labs(title="Uber Pickups by Day of Month between January and June 2015",  y="Pickup Count", x="Day of Month")
+```
+
+```{r}
+pickups %>%
+  mutate(hour=hour(Pickup_date)) %>%
+  group_by(hour) %>%
+  summarize(count=n()) %>%
+  ggplot() +
+  geom_point(mapping=aes(hour, count)) +
+  geom_line(mapping=aes(hour, count))  +
+  labs(title="Uber Pickups by Hour of Day between January and June 2015",  y="Pickup Count", x="Hour")
+```
+```{r}
+pickups %>%
+  mutate(wday=wday(Pickup_date)) %>%
+  group_by(wday) %>%
+  summarize(count=n()) %>%
+  ggplot() +
+  geom_point(mapping=aes(wday, count)) +
+  geom_line(mapping=aes(wday, count))  +
+  labs(title="Uber Pickups by Hour of Day between January and June 2015",  y="Pickup Count", x="Day of Week")
+```
+
+Based on these plots, it looks like day of month is not likely to be significant, as it does not display any particular pattern. Hour, month, and day of week seem to be important.
+
+Now, a fun little joint graph, checking how the relationship between hour and number of pickups changes with the day of the week.
+
+
+```{r}
+pickups %>%
+  mutate(wday=wday(Pickup_date, label=TRUE, abbr=TRUE)) %>%
+  mutate(hour=hour(Pickup_date)) %>%
+  group_by_at(vars(wday, hour)) %>%
+  summarize(count=n()) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_point(mapping=aes(hour, count)) +
+  geom_line(mapping=aes(hour, count, color=wday))  +
+  labs(title="Uber Pickups by Hour of Day between January and June 2015",  y="Pickup Count", x="Hour of Day",
+       color="Day of Week")
+```
+
+
+
+## Checking out the trend
+
+```{r}
+linearmod <- lm("count ~ day", daydata)
+linearfit <- predict.lm(linearmod)
+```
+
+```{r}
+daydata %>%
+  ggplot() +
+  geom_point(mapping=aes(day, count)) +
+  geom_line(mapping=aes(day, count)) +
+  geom_line(mapping=aes(day, linearfit), color="red") +
+  labs(title="Uber Pickups by Day between January and June 2015 with Trend",  y="Pickup Count", x="Day")
+```
+
+```{r}
+daydata %>%
+  mutate(detrended=count-linearfit) %>%
+  ggplot() +
+  geom_point(mapping=aes(day, detrended)) +
+  geom_line(mapping=aes(day, detrended)) +
+  labs(title="Uber Pickups by Day between January and June 2015, Detrended",  y="Pickup Count", x="Day")
+```
