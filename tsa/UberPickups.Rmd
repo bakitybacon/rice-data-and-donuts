@@ -96,7 +96,6 @@ pickups %>%
   mutate(hour=hour(Pickup_date)) %>%
   group_by_at(vars(wday, hour)) %>%
   summarize(count=n()) %>%
-  ungroup() %>%
   ggplot() +
   geom_point(mapping=aes(hour, count)) +
   geom_line(mapping=aes(hour, count, color=wday))  +
@@ -106,7 +105,7 @@ pickups %>%
 
 Naturally, Friday and Saturday nights have the highest pickup rates, as all the drunken revelers stagger back to their apartments.
 
-Now, onto a little bit of an exploration of how holidays effect Uber pickups.
+Now, onto a little exploration of how holidays affect Uber pickups.
 
 Here are the holidays I'm going to use:
 
@@ -156,7 +155,7 @@ It looks like people use Uber more on holidays than not. Probably, holidays aren
 
 ## Checking out the trend
 
-We first fit an OLS model, just to give us an idea how the mean is changing over time.
+We first fit a simple line of best fit, just to give us an idea how the mean is changing over time.
 
 ```{r}
 linearmod <- lm("count ~ day", daydata)
@@ -336,7 +335,7 @@ Let's build that model!
 
 First, split the data into two sections. The first section is used to build the model. The second is used to evaluate its effectiveness. 
 
-The first section is commonly called the _train set_. The second is commonly called the _train set_.
+The first section is commonly called the _train set_. The second is commonly called the _test set_.
 
 ```{r}
 daydata_train <- daydata %>%
@@ -424,7 +423,7 @@ Let's investigate the model a little more.
 prophet_plot_components(prophetmodel, prophetfit)
 ```
 
-So, daily and hourly seasonality are being handled as we would expect. Notice Friday and Saturday are very high! It also identifies a solid trend.
+So, daily and hourly seasonality are being handled as we would expect. It also identifies a solid trend. Notice our model predicts that Friday and Saturday have about 30000 more pickups than Monday!
 
 ## Neural network approaches
 
