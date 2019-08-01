@@ -1,14 +1,14 @@
----
-title: 'Rice Data and Donuts Time Series Workshop Interactive Exercises: R'
-author: 
-   name: "Corrin Fosmire"
-   affiliaton: "Rice University"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-runtime: shiny_prerendered
-output: learnr::tutorial
----
-
-```{r setup, include=FALSE}
+#' ---
+#' title: 'Time Series Workshop Interactive Exercises: R'
+#' author: 
+#'    name: "Corrin Fosmire"
+#'    affiliaton: "Rice University"
+#' date: "`r format(Sys.time(), '%B %d, %Y')`"
+#' runtime: shiny_prerendered
+#' output: learnr::tutorial
+#' ---
+#' 
+## ----setup, include=FALSE------------------------------------------------
 library(learnr)
 library(tidyverse)
 library(lubridate)
@@ -58,36 +58,36 @@ djia <- djia %>%
   rowid_to_column() %>%
   select(rowid, year, month, yday, wday, mday, Date, Close)
 
-```
 
-## Introduction
-
-This webpage will run through a full forecasting modeling session, using real data from the Dow Jones Industrial Average. Click on a section to the left to get started!
-
-## Importing and Cleaning Data
-
-Note that the DJIA doesn't open or close on federal holidays, so some days will be missing. It's easier if we just copy the previous day's close. Since the first day of the year is a holiday, and there's nothing before it, we remove that point.
-
-```{r}
+#' 
+#' ## Introduction
+#' 
+#' This webpage will run through a full forecasting modeling session, using real data from the Dow Jones Industrial Average. Click on a section to the left to get started!
+#' 
+#' ## Importing and Cleaning Data
+#' 
+#' Note that the DJIA doesn't open or close on federal holidays, so some days will be missing. It's easier if we just copy the previous day's close. Since the first day of the year is a holiday, and there's nothing before it, we remove that point.
+#' 
+## ------------------------------------------------------------------------
 head(djia)
 
 djia %>%
   ggplot() +
   geom_line(mapping=aes(Date, Close)) +
   labs(title="Dow Jones Industrial Average Close between 2013 and 2018 ", y="DJIA Close", x="Date")
-```
 
-## Exploratory Data Analysis
-
-Note: solutions below use dplyr and ggplot extensively. If you're more familiar with another plotting or data manipulation package, please feel free to use that, but compare with the reference solution to see if the graphs look right!
-
-Take a look at the Dow Jones Industrial Average close by month, day of year, day of month, and day of week. Do you notice any trends?
-
-```{r monthquiz, exercise=TRUE}
+#' 
+#' ## Exploratory Data Analysis
+#' 
+#' Note: solutions below use dplyr and ggplot extensively. If you're more familiar with another plotting or data manipulation package, please feel free to use that, but compare with the reference solution to see if the graphs look right!
+#' 
+#' Take a look at the Dow Jones Industrial Average close by month, day of year, day of month, and day of week. Do you notice any trends?
+#' 
+## ----monthquiz, exercise=TRUE--------------------------------------------
 # Enter your code here.
-```
 
-```{r monthquiz-solution}
+#' 
+## ----monthquiz-solution--------------------------------------------------
 djia %>%
   group_by(month) %>%
   summarize(monthavg=mean(Close)) %>%
@@ -95,26 +95,26 @@ djia %>%
   geom_point(mapping=aes(month, monthavg)) +
   geom_line(mapping=aes(month, monthavg)) +
   labs(title="Average Dow Jones Close by Month between 2013 and 2018 ", y="DJIA Close", x="Month")
-```
 
-```{r ydayquiz, exercise=TRUE}
+#' 
+## ----ydayquiz, exercise=TRUE---------------------------------------------
 # Enter your code here.
-```
 
-```{r ydayquiz-solution}
+#' 
+## ----ydayquiz-solution---------------------------------------------------
 djia %>%
   group_by(yday) %>%
   summarize(ydayavg=mean(Close)) %>%
   ggplot() +
   geom_line(mapping=aes(yday, ydayavg)) +
   labs(title="Average Dow Jones Close by Day of Year between 2013 and 2018 ", y="DJIA Close", x="Day of Year")
-```
 
-```{r mdayquiz, exercise=TRUE}
+#' 
+## ----mdayquiz, exercise=TRUE---------------------------------------------
 # Enter your code here.
-```
 
-```{r mdayquiz-solution}
+#' 
+## ----mdayquiz-solution---------------------------------------------------
 djia %>%
   group_by(mday) %>%
   summarize(mdayavg=mean(Close)) %>%
@@ -122,13 +122,13 @@ djia %>%
   geom_point(mapping=aes(mday, mdayavg)) +
   geom_line(mapping=aes(mday, mdayavg))  +
   labs(title="Average Dow Jones Close by Day of Month between 2013 and 2018 ",  y="DJIA Close", x="Day of Month")
-```
 
-```{r wdayquiz, exercise=TRUE}
+#' 
+## ----wdayquiz, exercise=TRUE---------------------------------------------
 # Enter your code here.
-```
 
-```{r wdayquiz-solution}
+#' 
+## ----wdayquiz-solution---------------------------------------------------
 djia %>%
   group_by(wday) %>%
   summarize(wdayavg=mean(Close)) %>%
@@ -136,15 +136,15 @@ djia %>%
   geom_point(mapping=aes(wday, wdayavg)) +
   geom_line(mapping=aes(wday, wdayavg))  +
   labs(title="Average Dow Jones Close by Day of Week between 2013 and 2018 ",  y="DJIA Close", x="Day of Week")
-```
 
-Challenge: Try plotting by day of month with month as a categorical variable.
-
-```{r catquiz, exercise=TRUE}
+#' 
+#' Challenge: Try plotting by day of month with month as a categorical variable.
+#' 
+## ----catquiz, exercise=TRUE----------------------------------------------
 # Enter your code here.
-```
 
-```{r catquiz-solution}
+#' 
+## ----catquiz-solution----------------------------------------------------
 djia %>%
   mutate(month=factor(month)) %>% #convert to categorical
   group_by_at(vars(month, mday)) %>%
@@ -154,62 +154,62 @@ djia %>%
   geom_point(mapping=aes(mday, monthmdayavg, color=month))  +
   geom_line(mapping=aes(mday, monthmdayavg, color=month))  +
   labs(title="Average Dow Jones Close by Day of Month between 2013 and 2018 ",  y="DJIA Close", x="Day of Month", legend="Month")
-```
 
-## Checking out the trend
-
-We first fit an simple line of best fit model, just to give us an idea how the mean is changing over time.
-
-```{r}
+#' 
+#' ## Checking out the trend
+#' 
+#' We first fit an simple line of best fit model, just to give us an idea how the mean is changing over time.
+#' 
+## ------------------------------------------------------------------------
 linearmod <- lm("Close ~ rowid", djia)
 linearfit <- predict.lm(linearmod)
-```
 
-```{r trendquiz-setup}
+#' 
+## ----trendquiz-setup-----------------------------------------------------
 linearmod <- lm("Close ~ rowid", djia)
 linearfit <- predict.lm(linearmod)
-```
 
-```{r trendquiz, exercise=TRUE}
+#' 
+## ----trendquiz, exercise=TRUE--------------------------------------------
 # Enter your code here.
-```
 
-```{r trendquiz-solution}
+#' 
+## ----trendquiz-solution--------------------------------------------------
 djia %>%
   ggplot() +
   geom_line(mapping=aes(Date, Close)) +
   geom_line(mapping=aes(Date, linearfit), color="red") +
   labs(title="Average Dow Jones Close by Day between 2013 and 2018  with Trend",  y="DJIA Close", x="Day")
-```
 
-What do you notice?
-
-Now, subtract the trend.
-
-```{r trendquiz2-setup}
+#' 
+#' What do you notice?
+#' 
+#' Now, subtract the trend.
+#' 
+## ----trendquiz2-setup----------------------------------------------------
 linearmod <- lm("Close ~ rowid", djia)
 linearfit <- predict.lm(linearmod)
-```
 
-```{r trend2quiz, exercise=TRUE}
+#' 
+## ----trend2quiz, exercise=TRUE-------------------------------------------
 # Enter your code here.
-```
 
-```{r trend2quiz-solution}
+#' 
+## ----trend2quiz-solution-------------------------------------------------
 djia %>%
   mutate(detrended=Close-linearfit) %>%
   ggplot() +
   geom_line(mapping=aes(Date, detrended)) +
   labs(title="Average Dow Jones Close by Day between 2013 and 2018 , Detrended",  y="DJIA Close", x="Day")
-```
 
-## Differencing
-
-Differencing means subtracting previous values, one or more steps back. If it's one step, it will remove a linear trend. If it's a larger number, like seven, it can remove seasonalities, such as weekly seasonality here.
-
-Let's start by differencing by 1 and 7.
-
-```{r diffinter, exercise=TRUE}
+#' 
+#' ## Differencing
+#' 
+#' Differencing means subtracting previous values, one or more steps back. If it's one step, it will remove a linear trend. If it's a larger number, like seven, it can remove seasonalities, such as weekly seasonality here.
+#' 
+#' Let's start by differencing by 1 and 7.
+#' 
+## ----diffinter, exercise=TRUE--------------------------------------------
 difforders = c() ## Put your differencing levels here.
 
 difference_plot <- function(order) {
@@ -223,15 +223,15 @@ difference_plot <- function(order) {
 
 difforders %>%
   map(difference_plot)
-```
 
-Now, try combining the two.
-
-```{r diffquiz, exercise=TRUE}
+#' 
+#' Now, try combining the two.
+#' 
+## ----diffquiz, exercise=TRUE---------------------------------------------
 # Enter your code here.
-```
 
-```{r diffquiz-solution}
+#' 
+## ----diffquiz-solution---------------------------------------------------
 djia %>%
   mutate(differenced=Close-lag(Close, 1)) %>%
   drop_na() %>%
@@ -240,15 +240,15 @@ djia %>%
   ggplot() +
   geom_line(mapping=aes(Date, differenced)) +
   labs(title="Difference Orders: 1 and 7")
-```
 
-Let's use the Augmented Dickey-Fuller test to see how well we did.
-
-```{r adfquiz, exercise=TRUE}
+#' 
+#' Let's use the Augmented Dickey-Fuller test to see how well we did.
+#' 
+## ----adfquiz, exercise=TRUE----------------------------------------------
 # Enter your code here.
-```
 
-```{r adfquiz-solution}
+#' 
+## ----adfquiz-solution----------------------------------------------------
 djia %>%
   mutate(differenced=Close-lag(Close, 7)) %>%
   drop_na() %>%
@@ -256,19 +256,19 @@ djia %>%
   drop_na() %>%
   pull(differenced) %>%
   adf.test()
-```
 
-Is your p-value below 0.05? If so, great! If not, keep going, but things may not turn out quite as well.
-
-## Lagged Scatterplots
-
-How do we actually find good orders for differencing? A good way is to use lagged scatterplots.
-
-The idea is we're plotting a point versus a previous point, either the previous one or seven back, in the case of weeks, for example.
-
-Let's look at a couple. 
-
-```{r}
+#' 
+#' Is your p-value below 0.05? If so, great! If not, keep going, but things may not turn out quite as well.
+#' 
+#' ## Lagged Scatterplots
+#' 
+#' How do we actually find good orders for differencing? A good way is to use lagged scatterplots.
+#' 
+#' The idea is we're plotting a point versus a previous point, either the previous one or seven back, in the case of weeks, for example.
+#' 
+#' Let's look at a couple. 
+#' 
+## ------------------------------------------------------------------------
 lag_scatter_map <- function(datavector, maxlag) {
   1:maxlag %>%
     map(~ lag_scatter(datavector, .x))
@@ -280,20 +280,19 @@ lag_scatter <- function(datavector, laglevel) {
     ggplot() +
     geom_point(mapping=aes(datavec, datalag)) +
     geom_smooth(mapping=aes(datavec, datalag), method = "loess", size = 1.5) +
-    labs(y=str_c("Lagged Pickups of Order ",as.character(laglevel)),
-         x="Date")
+    labs(title=str_c("Lagged Pickups of Order ",as.character(laglevel)))
 }
 
 lag_scatter_map(djia$Close, 15)
-```
 
-What orders seem to be the most important?
-
-## Moving averages
-
-Let's take a look at another kind of pre-processing step. A moving average averages in a small window of the data set, say for example three data points. It's used to smooth the data to diminish the effect of huge spikes. Note that a Moving Average of order one is simply the original series.
-
-```{r mainter, exercise=TRUE}
+#' 
+#' What orders seem to be the most important?
+#' 
+#' ## Moving averages
+#' 
+#' Let's take a look at another kind of pre-processing step. A moving average averages in a small window of the data set, say for example three data points. It's used to smooth the data to diminish the effect of huge spikes. Note that a Moving Average of order one is simply the original series.
+#' 
+## ----mainter, exercise=TRUE----------------------------------------------
 maorders = c() ## Enter your orders here!
 
 ma_plot <- function(order) {
@@ -307,21 +306,21 @@ ma_plot <- function(order) {
 
 maorders %>%
   map(ma_plot)
-```
 
-What do you notice?
-
-## ARIMA Models
-
-An ARIMA model contains three components: autoregressive components, moving average components, and a differencing order.
-
-Autoregressive components help explain how much a data point depends upon previous data points.
-
-Moving average components help us not get too carried away by rare, huge deviations.
-
-In order to give us a notion of how many autoregressive components we need, we look at the autocorrelation plot.
-
-```{r}
+#' 
+#' What do you notice?
+#' 
+#' ## ARIMA Models
+#' 
+#' An ARIMA model contains three components: autoregressive components, moving average components, and a differencing order.
+#' 
+#' Autoregressive components help explain how much a data point depends upon previous data points.
+#' 
+#' Moving average components help us not get too carried away by rare, huge deviations.
+#' 
+#' In order to give us a notion of how many autoregressive components we need, we look at the autocorrelation plot.
+#' 
+## ------------------------------------------------------------------------
 confbound <- qnorm((1 + 0.95)/2)/sqrt(nrow(djia))
 
 acf_vector <- as.vector(acf(djia$Close, lag.max=500, plot=FALSE)$acf)
@@ -333,13 +332,13 @@ acftibble %>%
   geom_bar(stat="identity", mapping=aes(lag, acf)) +
   geom_ribbon(mapping=aes(x=lag, ymin=minconf, ymax=maxconf), fill="blue", alpha=0.2) +
   labs(title="Autocorrelation Plot")
-```
 
-What do you notice?
-
-Now, let's do something similar with the partial autocorrelation plot. This will give us an idea of how many moving average components we need.
-
-```{r}
+#' 
+#' What do you notice?
+#' 
+#' Now, let's do something similar with the partial autocorrelation plot. This will give us an idea of how many moving average components we need.
+#' 
+## ------------------------------------------------------------------------
 pacf_vector <- as.vector(pacf(djia$Close, lag.max=10, plot=FALSE)$acf)
 pacftibble <- tibble(lag=0:(length(pacf_vector)-1), pacf=pacf_vector)
 pacftibble %>%
@@ -349,44 +348,44 @@ pacftibble %>%
   geom_bar(stat="identity", mapping=aes(lag, pacf)) +
   geom_ribbon(mapping=aes(x=lag, ymin=minconf, ymax=maxconf), fill="blue", alpha=0.2) +
   labs(title="Partial Autocorrelation Plot")
-```
 
-What do you notice?
-
-Let's build that model!
-
-First, split the data into two sections. The first section is used to build the model. The second is used to evaluate its effectiveness. 
-
-The first section is commonly called the _train set_. The second is commonly called the _test set_.
-
-The threshhold is up to you. It's usually a good idea to put at least four times as much data in the training set.
-
-```{r splitquiz, exercise=TRUE}
+#' 
+#' What do you notice?
+#' 
+#' Let's build that model!
+#' 
+#' First, split the data into two sections. The first section is used to build the model. The second is used to evaluate its effectiveness. 
+#' 
+#' The first section is commonly called the _train set_. The second is commonly called the _test set_.
+#' 
+#' The threshhold is up to you. It's usually a good idea to put at least four times as much data in the training set.
+#' 
+## ----splitquiz, exercise=TRUE--------------------------------------------
 # Enter your code here.
-```
 
-```{r splitquiz-solution}
+#' 
+## ----splitquiz-solution--------------------------------------------------
 # many things work, but here's a sample that seems to work.
 djia_train <- djia %>%
   filter(year < 2018)
 
 djia_test <- djia %>%
   filter(year == 2018)
-```
 
-```{r include=FALSE}
+#' 
+## ----include=FALSE-------------------------------------------------------
 djia_train <- djia %>%
   filter(year < 2018)
 
 djia_test <- djia %>%
   filter(year == 2018)
-```
 
-Now, let's build the model and plot our forecast. Try using your parameters, then use `auto.arima`.
-
-```{r arimainter, exercise=TRUE}
-arimamodel <- arima(djia_train$Close, order=c()) ## Enter your orders here!
-#arimamodel <- auto.arima(djia_train$Close)
+#' 
+#' Now, let's build the model and plot our forecast. Try using your parameters, then use `auto.arima`.
+#' 
+## ----arimainter, exercise=TRUE-------------------------------------------
+#arimamodel <- arima(djia_train$Close, order=c()) ## Enter your orders here!
+arimamodel <- auto.arima(djia_train$Close)
 arimafit <- as.vector(forecast(arimamodel, h=nrow(djia_test)))
 
 ggplot() +
@@ -397,21 +396,21 @@ ggplot() +
   labs(title="A Fitted Arima Model", y="DJIA Close", x="Day")
 arimamape <- mean(abs(djia_test$Close - arimafit$mean)/djia_test$Close)
 print(str_c("MAPE: ", arimamape * 100))
-```
 
-To quantify this, let's look at our MAPE (Mean Average Percentage Error.)
-
-How good is the model?
-
-## Prophet Models
-
-The prophet library, produced by researchers at Facebook, produced a new class of models.
-
-Some of its features are its flexibility and great support for holidays and seasonality. It uses changepoints to split the series into several smaller components, for each of which it can fit a model individually.
-
-Unfortunately, prophet has some annoying conventions. Our date column must be named "ds". The variable we are predicting must be named "y".
-
-```{r}
+#' 
+#' To quantify this, let's look at our MAPE (Mean Average Percentage Error.)
+#' 
+#' How good is the model?
+#' 
+#' ## Prophet Models
+#' 
+#' The prophet library, produced by researchers at Facebook, produced a new class of models.
+#' 
+#' Some of its features are its flexibility and great support for holidays and seasonality. It uses changepoints to split the series into several smaller components, for each of which it can fit a model individually.
+#' 
+#' Unfortunately, prophet has some annoying conventions. Our date column must be named "ds". The variable we are predicting must be named "y".
+#' 
+## ------------------------------------------------------------------------
 prophet_train <- djia_train
 prophet_test <- djia_test
 
@@ -425,11 +424,11 @@ prophet_test <- prophet_test %>%
 
 colnames(prophet_train) <- c("ds","y")
 colnames(prophet_test) <- c("ds","y")
-```
 
-Let's take the model out for a spin.
-
-```{r prophex, exercise=TRUE}
+#' 
+#' Let's take the model out for a spin.
+#' 
+## ----prophex, exercise=TRUE----------------------------------------------
 prophetmodel <- prophet(prophet_train, fit=TRUE, yearly.seasonality=TRUE, daily.seasonality = TRUE, weekly.seasonality = TRUE)
 prophetfit <- predict(prophetmodel, prophet_test)
 
@@ -444,22 +443,22 @@ prophetmape <- mean(abs(djia_test$Close - prophetfit$yhat)/djia_test$Close)
 print(str_c("MAPE: ", prophetmape * 100))
 
 prophet_plot_components(prophetmodel, prophetfit)
-```
 
-How'd you do?
-
-Look at the components your model made. Do they make sense?
-
-## Neural network approaches
-
-```{r include=FALSE}
+#' 
+#' How'd you do?
+#' 
+#' Look at the components your model made. Do they make sense?
+#' 
+#' ## Neural network approaches
+#' 
+## ----include=FALSE-------------------------------------------------------
 tf$InteractiveSession()
 tf$GPUOptions$allow_growth <- TRUE
-```
 
-To use our data set in TensorFlow, we must first rearrange it a little.
-
-```{r}
+#' 
+#' To use our data set in TensorFlow, we must first rearrange it a little.
+#' 
+## ------------------------------------------------------------------------
 # divide by max, then subtract mean
 copytbl <- as_tibble(djia)
 copytbl <- copytbl %>%
@@ -487,11 +486,11 @@ tf_train_x <- array_reshape(djiatensor[cuts[1]:cuts[2], ], c(nrow(djia_train) - 
 tf_train_y <- array_reshape(djiatarget[cuts[1]:cuts[2]], c(nrow(djia_train) - num_days_back, 1, 1))
 tf_test_x <- array_reshape(djiatensor[cuts[3]:cuts[4], ], c(nrow(djia_test), num_days_back, 1))
 tf_test_y <- array_reshape(djiatarget[cuts[3]:cuts[4]], c(nrow(djia_test), 1, 1))
-```
 
-Now, we can fit a Simple RNN to our data. Try fiddling with the epochs, validation split, and number of units.
-
-```{r kerasex, exercise=TRUE, exercise.timelimit=1000}
+#' 
+#' Now, we can fit a Simple RNN to our data. Try fiddling with the epochs, validation split, and number of units.
+#' 
+## ----kerasex, exercise=TRUE, exercise.timelimit=1000---------------------
 rnn <- keras_model_sequential()
 rnn %>%
   layer_lstm(units=3, return_sequences=TRUE, input_shape = c(num_days_back, 1)) %>%
@@ -513,10 +512,10 @@ rnn %>%
 
 rnn %>%
   evaluate(tf_test_x, tf_test_y)
-```
 
-How'd you do?
-
-This is pretty hard to get right, so it's okay if you get fairly large errors.
-
-To actually get this back to suitable for plotting, we should apply the inverse transformation of maxscale and meanscale. Sadly, RStudio's Keras package is not quite perfect yet, and it won't return predictions. This will be fixed soon.
+#' 
+#' How'd you do?
+#' 
+#' This is pretty hard to get right, so it's okay if you get fairly large errors.
+#' 
+#' To actually get this back to suitable for plotting, we should apply the inverse transformation of maxscale and meanscale. Sadly, RStudio's Keras package is not quite perfect yet, and it won't return predictions. This will be fixed soon.
