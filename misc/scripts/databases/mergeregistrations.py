@@ -14,7 +14,8 @@ coursemapping = {
     'R Visualization and Data Manipulation: Monday July 8 2019 @ 9-10:30 a.m.': 'Rvis',
     'The Absolute Basics of Jupyter Notebooks: Friday July 12 2019 @ 10-11 a.m.': 'Jupyter',
     'Introduction to GitHub: Tuesday June 18 2019 @ 2-3:30 p.m.': 'GitHub',
-    'Using Rice\'s Private VM Cloud: Tuesday June 25 2019 @ 2-3:30 p.m.': 'VMCloud'}
+    'Using Rice\'s Private VM Cloud: Tuesday June 25 2019 @ 2-3:30 p.m.': 'VMCloud',
+    'Introduction to Time Series Analysis: Thursday Aug 1 2019 @ 10-11 a.m.': 'TimeSeries'}
 
 # reverse the course mapping so we can find by short key as well
 tablemapping = {}
