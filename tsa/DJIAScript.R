@@ -294,7 +294,7 @@ lag_scatter_map(djia$Close, 15)
 #' Let's take a look at another kind of pre-processing step. A moving average averages in a small window of the data set, say for example three data points. It's used to smooth the data to diminish the effect of huge spikes. Note that a Moving Average of order one is simply the original series.
 #' 
 ## ----mainter, exercise=TRUE----------------------------------------------
-maorders = c() ## Enter your orders here!
+maorders = c(1, 3, 5, 7) ## Enter your orders here!
 
 ma_plot <- function(order) {
   djia %>%
@@ -491,7 +491,7 @@ tf_test_y <- array_reshape(djiatarget[cuts[3]:cuts[4]], c(nrow(djia_test), 1))
 ## ----kerasex, exercise=TRUE, exercise.timelimit=1000---------------------
 rnn <- keras_model_sequential()
 rnn %>%
-  layer_lstm(units=3, return_sequences=TRUE, input_shape = c(num_days_back, 1)) %>%
+  layer_lstm(units=3, return_sequences=FALSE, input_shape = c(num_days_back, 1)) %>%
   layer_activation_relu() %>%
   layer_dense(1)
 
