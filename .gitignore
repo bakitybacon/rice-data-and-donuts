@@ -9,3 +9,5 @@ tsa/~$Introduction to Time Series Analysis.pptx
 misc/scripts/databases/key.txt
 *-checkpoint.ipynb
 *.csv
+.Rhistory
+tsa/Rplots.pdf

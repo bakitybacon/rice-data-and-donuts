@@ -1,5 +1,5 @@
 #' ---
-#' title: 'Time Series Workshop Interactive Exercises: R'
+#' title: 'Rice Data and Donuts Time Series Workshop Interactive Exercises: R'
 #' author: 
 #'    name: "Corrin Fosmire"
 #'    affiliaton: "Rice University"
@@ -280,7 +280,8 @@ lag_scatter <- function(datavector, laglevel) {
     ggplot() +
     geom_point(mapping=aes(datavec, datalag)) +
     geom_smooth(mapping=aes(datavec, datalag), method = "loess", size = 1.5) +
-    labs(title=str_c("Lagged Pickups of Order ",as.character(laglevel)))
+    labs(y=str_c("Lagged Pickups of Order ",as.character(laglevel)),
+         x="Date")
 }
 
 lag_scatter_map(djia$Close, 15)
@@ -384,8 +385,8 @@ djia_test <- djia %>%
 #' Now, let's build the model and plot our forecast. Try using your parameters, then use `auto.arima`.
 #' 
 ## ----arimainter, exercise=TRUE-------------------------------------------
-#arimamodel <- arima(djia_train$Close, order=c()) ## Enter your orders here!
-arimamodel <- auto.arima(djia_train$Close)
+arimamodel <- arima(djia_train$Close, order=c()) ## Enter your orders here!
+#arimamodel <- auto.arima(djia_train$Close)
 arimafit <- as.vector(forecast(arimamodel, h=nrow(djia_test)))
 
 ggplot() +
@@ -459,16 +460,11 @@ tf$GPUOptions$allow_growth <- TRUE
 #' To use our data set in TensorFlow, we must first rearrange it a little.
 #' 
 ## ------------------------------------------------------------------------
-# divide by max, then subtract mean
 copytbl <- as_tibble(djia)
 copytbl <- copytbl %>%
   fill(Close,.direction="up")
-maxscale <- max(copytbl$Close)
-copytbl$Close = copytbl$Close / maxscale
-meanscale <- mean(copytbl$Close)
-copytbl$Close = copytbl$Close - meanscale
 
-num_days_back <- 2
+num_days_back <- 3
 
 datatensor <- array(lag(copytbl$Close))
 for(i in 2:num_days_back) {
@@ -483,12 +479,14 @@ djiatarget <- datatarget[(num_days_back+1):nrow(djia)]
 cuts <- c(1, nrow(djia_train) - num_days_back, nrow(djia_train) - num_days_back + 1, nrow(djia) - num_days_back)
 
 tf_train_x <- array_reshape(djiatensor[cuts[1]:cuts[2], ], c(nrow(djia_train) - num_days_back, num_days_back, 1))
-tf_train_y <- array_reshape(djiatarget[cuts[1]:cuts[2]], c(nrow(djia_train) - num_days_back, 1, 1))
+tf_train_y <- array_reshape(djiatarget[cuts[1]:cuts[2]], c(nrow(djia_train) - num_days_back, 1))
 tf_test_x <- array_reshape(djiatensor[cuts[3]:cuts[4], ], c(nrow(djia_test), num_days_back, 1))
-tf_test_y <- array_reshape(djiatarget[cuts[3]:cuts[4]], c(nrow(djia_test), 1, 1))
+tf_test_y <- array_reshape(djiatarget[cuts[3]:cuts[4]], c(nrow(djia_test), 1))
 
 #' 
-#' Now, we can fit a Simple RNN to our data. Try fiddling with the epochs, validation split, and number of units.
+#' Now, we can fit a Simple RNN to our data. Try fiddling with the epochs, validation split, the number of layers, and/or the number of units.
+#' 
+#' Note that the following may take a very long time to complete, if it does at all! It's much better to run it on your personal computer, for which you should download the Rmd file from here.
 #' 
 ## ----kerasex, exercise=TRUE, exercise.timelimit=1000---------------------
 rnn <- keras_model_sequential()
