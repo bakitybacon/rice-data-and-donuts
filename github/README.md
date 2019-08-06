@@ -6,7 +6,7 @@ It features discussion of distributed workflows, pull requests, forking, and mer
 
 Here are the slides:
 
-* [pptx](github/Introduction to Git & GitHub.pptx)
-* [pdf](github/Introduction to Git & GitHub.pptx)
+* [pptx](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/github/Introduction%20to%20Git%20%26%20GitHub.pdf)
+* [pdf](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/github/Introduction%20to%20Git%20%26%20GitHub.pdf)
 
 The interactive exercises are in the slides. Feel free to email me at coryfosmire@gmail.com if you want edit access to the repository. You can always fork the repository as well.

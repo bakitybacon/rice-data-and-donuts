@@ -2,16 +2,16 @@
 Workshops for the Data &amp; Donuts series at Rice University. All materials and courses are developed by Corrin Fosmire. They are freely available for use and redistribution.
 
 Planned Workshops for the Summer 2019 Session:
-* Introduction to GitHub (github/ directory)
-* Introduction to R (introR/ directory)
-* R Visualization and Data Manipulation (Rviz/ directory)
-* Introduction to Time Series Analysis (tsa/ directory)
+* Introduction to GitHub ([github/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/github))
+* Introduction to R ([introR/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/introR))
+* R Visualization and Data Manipulation ([Rviz/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/Rviz))
+* Introduction to Time Series Analysis ([tsa/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tsa))
 
 Planned Workshops for the Fall 2019 Session:
-* Introduction to GitHub (github/ directory)
-* Introduction to Time Series Analysis (tsa/ directory)
-* Introduction to Bash (bash/ directory)
-* Introduction to TensorFlow (tf/ directory)
+* Introduction to GitHub ([github/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/github))
+* Introduction to Time Series Analysis ([tsa/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tsa))
+* Introduction to Bash ([bash/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tsa))
+* Introduction to TensorFlow ([tf/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tsa))
 
 
 There is more information available for each class in the corresponding directory.

@@ -4,7 +4,7 @@ This class teaches the fundamentals of base R, such as data types (vectors, matr
 
 Here are the slides:
 
-* [pptx](introR/Introduction to R.pptx)
-* [pdf](introR/Introduction to R.pdf)
+* [pptx](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/introR/Introduction%20to%20R.pptx)
+* [pdf](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/introR/Introduction%20to%20R.pdf)
 
 The interactive exercises for this tutorial are available at http://www.shadyweb.site/shiny/introR/ .

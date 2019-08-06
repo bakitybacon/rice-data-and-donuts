@@ -4,7 +4,7 @@ This class teaches forecasting on time series with ARIMA, Prophet, and LSTM/RNN 
 
 Here are the slides:
 
-* [pptx](tsa/Introduction to Time Series Analysis.pptx)
-* [pdf](tsa/Introduction to Time Series Analysis.pptx)
+* [pptx](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/tsa/Introduction%20to%20Time%20Series%20Analysis.pptx)
+* [pdf](https://github.com/bakitybacon/rice-data-and-donuts/blob/master/tsa/Introduction%20to%20Time%20Series%20Analysis.pdf)
 
 The interactive exercises for this tutorial are currently unavailable.
