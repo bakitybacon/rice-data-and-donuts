@@ -2,4 +2,6 @@ DJIANotebook_files/
 InteractiveExercisesR_files/
 InteractiveExercisesR.html
 djia.csv
-UberPickups.html
+*.html
+.ipynb_checkpoints/
+Rplots.pdf

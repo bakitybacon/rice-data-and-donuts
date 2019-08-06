@@ -7,4 +7,11 @@ Planned Workshops for the Summer 2019 Session:
 * R Visualization and Data Manipulation (Rviz/ directory)
 * Introduction to Time Series Analysis (tsa/ directory)
 
+Planned Workshops for the Fall 2019 Session:
+* Introduction to GitHub (github/ directory)
+* Introduction to Time Series Analysis (tsa/ directory)
+* Introduction to Bash (bash/ directory)
+* Introduction to TensorFlow (tf/ directory)
+
+
 There is more information available for each class in the corresponding directory.
