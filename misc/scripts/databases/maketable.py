@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import airtableapi as at
 import re
 import sys
@@ -9,10 +9,39 @@ fields = ["Serial", "SID", "Submitted Time", "Full Name",
 needed = ["Full Name", "Email Address", "Rice Affiliation", 
   "School, Department, or Program"]
 
-courses = ['Python Data Visualization with Matplotlib: Tuesday July 9 2019 @ 1-2:30 p.m.', 'Python for Beginners: Friday May 31 2019 @ 10-11:30 a.m.', '[Class is Full, registration closed] June 18 2019 @ 10-11:30p.m.', 'Introduction to R: Tuesday July 2 2019 @ 1-2:30 p.m.', 'Introduction to Effective Data Visualization: Wednesday June 12 2019 @ 10-11:30 a.m.', 'createdTime', '[Class is Full, registration closed] June 20 2019 @10-11:30 a.m.', 'Colors in Data Visualization: Wednesday June 19 2019 @ 10-11:30 a.m', 'Python-Pandas: Tuesday June 11 2019 @ 10-11:30 a.m.', 'R Visualization and Data Manipulation: Monday July 8 2019 @ 9-10:30 a.m.', 'The Absolute Basics of Jupyter Notebooks: Friday July 12 2019 @ 10-11 a.m.', '[Class is Full, registration closed] Using Excel to Manage and Analyze Data: Thursday June 13 2019 @ 10-11:30 a.m.', 'Introduction to GitHub: Tuesday June 18 2019 @ 2-3:30 p.m.', 'Introduction to Time Series Analysis: Thursday Aug 1 2019 @ 10-11 a.m.', "Using Rice's Private VM Cloud: Tuesday June 25 2019 @ 2-3:30 p.m."]
+courses = ["Python for Beginners: Tuesday Sept 17 2019 @ 1-2:30 p.m.",
+	"Python for Beginners: Thursday Sept 18 2019 @3-4:30 p.m.",
+	"Introduction to GitHub: Tuesday Sept 17 2019 @ 6-7:30 p.m.",
+	"Introduction to GitHub: Thursday Sept 19 2019 @3-4:30 p.m.",
+	"Introduction to R: Wednesday Sept 18 2019 @ 1-2:30 p.m.",
+	"Non-Programmer's Introduction to Rice’s Computing Infrastructure: Virtual Machines, Storage, and Supercomputing: Thursday Sept 19, 2019 @ 2:3:30 p.m.",
+	"Using Excel to Manage and Analyze Data: Friday Sept 20 2019 @ 10-11:30 a.m.",
+	"Python-Pandas: Tuesday Sept 24 2019 @ 3-4:30 p.m.",
+	"Introduction to Time Series Analysis: Tuesday Sept 24 2019 @ 5:00-6:30 p.m.",
+	"Introduction to Time Series Analysis: Wednesday Sept 25 2019 @ 12-1:30 p.m.",
+	"Using Excel to Manage and Analyze Data: Wednesday Sept 25 2019 @ 10-11:30 a.m.",
+	"Python-Pandas: Thursday Sept 26 2019 @ 1-2:30 p.m.",
+	"Introduction to R: Friday Sept 27 2019 @ 3:30-5:00 p.m.",
+	"Python Data Visualization with Matplotlib: Monday Sept 30 2019 @ 2-3:30 p.m.",
+	"Python Data Visualization with Matplotlib: Tuesday Oct 1 2019 @ 10-11:30 a.m.",
+	"Excel Charts Tips for Visualizing Data: Friday Oct 4 2019 @ 10-11:00 a.m.",
+	"R Visualization and Data Manipulation: Monday Oct 7 2019 @ 11:30-1:00 p.m.",
+	"Web Scraping with Python: Tuesday Oct 8 2019 @2:30-3:45 p.m.",
+	"R Visualization and Data Manipulation: Wednesday Oct 9 2019 @ 1-2:30 p.m.",
+	"Jupyter Notebook for Beginners: Thursday Oct 17 2019 @10-11:00 a.m.",
+	"R Visualization with ggplot2: Tuesday Oct 22 2019 @2-3:30 p.m.",
+	"Introduction to Access: Thursday Oct 24 2019 @10-11:30 a.m.",
+	"Introduction to Data Management: Friday Oct 25 2019 @10-11:30 a.m.",
+	"Introduction to SPSS: Tuesday Oct 29 2019 @ 1-2:30 p.m.",
+	"Introduction to Shell Scripting in Bash: Tuesday Oct 29 2019 @ 3-4:30 p.m.",
+	"Introduction to TensorFlow: Thursday Nov 14 2019 @ 2-3:30 p.m.",
+	"Introduction to SQL: Tuesday Nov 19 2019 @ 1-2:30 p.m."]
 
-base = "approTOf3L5vt6c3Y"
 table = "Course Data"
+with open("key.txt") as f:
+    key = f.readline().strip()
+with open("base.txt") as f:
+    base = f.readline().strip()
 
 def make_table(course, app, table, key):
     """
@@ -27,9 +56,6 @@ def make_table(course, app, table, key):
     neededplus.append(course)
     coursedata = coursedata[neededplus]
     coursedata.to_csv(course+".csv", index=False)
-
-with open("key.txt") as f:
-    key = f.readline().strip()
 
 if not key:
     print("Could not read key!")

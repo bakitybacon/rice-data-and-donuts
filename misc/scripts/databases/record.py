@@ -1,12 +1,16 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import airtableapi as at
 import re
+import subprocess
 
 fields = ["Serial", "SID", "Submitted Time", "Full Name",
     "Email Address", "Rice NetID", "Rice Affiliation",
     "School, Department, or Program"]
 
-base = "approTOf3L5vt6c3Y"
+with open("key.txt") as f:
+    key = f.readline().strip()
+with open("base.txt") as f:
+    base = f.readline().strip()
 table = "Course Data"
 
 def process_duplicates(app, table, key):
@@ -32,8 +36,6 @@ def process_duplicates(app, table, key):
         for delid in delids:
             at.delete({"id": delid}, app, table, key)
 
-with open("key.txt") as f:
-    key = f.readline().strip()
 
 if not key:
     print("Could not read key!")
@@ -76,8 +78,11 @@ else:
 for clazz in classes:
     record[clazz.strip()] = "X"
 
+# condense duplicated records
 newcomer = at.create(record, base, table, key)
 process_duplicates(base, table, key)
+
+#subprocess.run("python mergeregistrations.py all", shell=True)
 
 if 'error' in newcomer:
     print(newcomer)

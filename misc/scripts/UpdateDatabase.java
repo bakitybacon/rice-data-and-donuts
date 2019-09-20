@@ -26,12 +26,16 @@ public class UpdateDatabase {
         record.fullname = line.substring("Full Name: ".length());
       } else if (line.startsWith("Email Address:")) {
         record.email = line.substring("Email Address: ".length());
-      } else if (line.startsWith("Rice NetID")) {
+      } else if (line.startsWith("Rice NetID: ")) {
         record.netID = line.substring("Rice NetID: ".length());
+      } else if (line.startsWith("Rice NetID (e.g. mr66, not E000xxxx): ")) {
+        record.netID = line.substring("Rice NetID (e.g. mr66, not E000xxxx): ".length());
       } else if (line.startsWith("Rice Affiliation:")) {
         record.riceAffiliation = line.substring("Rice Affiliation: ".length());
-      } else if (line.startsWith("School, Department, or Program:")) {
+      } else if (line.startsWith("School, Department, or Program: ")) {
         record.department = line.substring("School, Department, or Program: ".length());
+      } else if (line.startsWith("School, Department or Program: ")) {
+        record.department = line.substring("School, Department or Program: ".length());
       } else if (line.startsWith("Course Selection:")) {
         record.registration = line.substring("Course Selection: ".length());
         if (record.registration.matches("^\\s*$")) {
@@ -66,7 +70,7 @@ public class UpdateDatabase {
       out.println(record.department);
       out.println(record.registration);
       out.close();
-      Process p = Runtime.getRuntime().exec("./record.py");
+      Process p = Runtime.getRuntime().exec("/home/shady/DataDonutsDaemon/scraper/record.py");
       p.waitFor();
       return p.exitValue() == 0;
     } catch (IOException | InterruptedException e) {
@@ -90,22 +94,19 @@ public class UpdateDatabase {
       Folder outfolder = store.getFolder("datadonutsarchive");
 
 
-      while (true) {
-        outfolder.open(Folder.READ_WRITE);
-        folder.open(Folder.READ_WRITE);
-        for (Message msg : folder.getMessages()) {
-          Record record = process((String) msg.getContent());
-          boolean delete = uploadRecord(record);
-          if (delete) {
-            folder.copyMessages(new Message[] {msg}, outfolder);
-            msg.setFlag(Flags.Flag.DELETED, true);
-            System.out.println("Moved " + record.email + "!");
-          }
+      outfolder.open(Folder.READ_WRITE);
+      folder.open(Folder.READ_WRITE);
+      for (Message msg : folder.getMessages()) {
+        Record record = process((String) msg.getContent());
+        boolean delete = uploadRecord(record);
+        if (delete) {
+          folder.copyMessages(new Message[] {msg}, outfolder);
+          msg.setFlag(Flags.Flag.DELETED, true);
+          System.out.println("Moved " + record.email + "!");
         }
-        folder.close(true);
-        outfolder.close(true);
-        Thread.sleep(3000);
       }
+      folder.close(true);
+      outfolder.close(true);
     } catch (NoSuchProviderException e) {
       e.printStackTrace();
       System.exit(1);
