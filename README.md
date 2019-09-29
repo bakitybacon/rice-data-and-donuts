@@ -10,7 +10,7 @@ Planned Workshops for the Summer 2019 Session:
 Planned Workshops for the Fall 2019 Session:
 * Introduction to GitHub ([github/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/github))
 * Introduction to Time Series Analysis ([tsa/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tsa))
-* Web Scraping in Python ([webscraping/](https://github.com/bakitybacon/rice-data-and-donuts/webscraping/))
+* Web Scraping in Python ([webscraping/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/webscraping/))
 * Introduction to Bash ([bash/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/bash))
 * Introduction to TensorFlow ([tf/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/tf))
 
