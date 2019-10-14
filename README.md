@@ -1,5 +1,5 @@
 # rice-data-and-donuts
-Workshops for the Data &amp; Donuts series at Rice University. All materials and courses are developed by Corrin Fosmire. They are freely available for use and redistribution.
+Workshops for the Data @ Rice series at Rice University. All materials and courses are developed by Corrin Fosmire. They are available for use under the terms of the GNU General Public License v3.0 (see the LICENSE file).
 
 Planned Workshops for the Summer 2019 Session:
 * Introduction to GitHub ([github/](https://github.com/bakitybacon/rice-data-and-donuts/tree/master/github))
