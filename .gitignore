@@ -11,3 +11,5 @@ misc/scripts/databases/key.txt
 *.csv
 .Rhistory
 tsa/Rplots.pdf
+misc/scripts/paperURLs.xlsx
+misc/scripts/digitalcurationnotes.txt
