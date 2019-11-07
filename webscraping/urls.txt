@@ -1,0 +1,7 @@
+Intro to HTML: https://www.w3schools.com/html/html_intro.asp
+Intro to HTTP: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+A sample article to get the text of: https://www.nytimes.com/2018/04/11/technology/personaltech/i-downloaded-the-information-that-facebook-has-on-me-yikes.html
+A sample API page (if one exists, you don't always need web scraping!): https://www.yelp.com/fusion
+
+Check out the following page and attempt to figure out what the structure of the game tables is!
+https://en.wikipedia.org/wiki/2017_World_Series
